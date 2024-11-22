@@ -1,5 +1,6 @@
 package com.goorm.dapum.component;
 
+import com.goorm.dapum.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
