@@ -1,6 +1,6 @@
 package com.goorm.dapum.configuration;
 
-import com.goorm.dapum.constant.Constants;
+import com.goorm.dapum.core.constant.Constants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

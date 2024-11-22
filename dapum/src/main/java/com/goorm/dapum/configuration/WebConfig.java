@@ -1,6 +1,6 @@
 package com.goorm.dapum.configuration;
 
-import com.goorm.dapum.component.AuthorizationInterceptor;
+import com.goorm.dapum.core.component.AuthorizationInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

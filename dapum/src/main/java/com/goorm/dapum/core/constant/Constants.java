@@ -1,4 +1,4 @@
-package com.goorm.dapum.constant;
+package com.goorm.dapum.core.constant;
 
 public class Constants {
     public static final String SECRET_KEY = "Yn2kjibddFAWtnPJ2AFlL8WXmohJMCvigQggaEypa5E=";

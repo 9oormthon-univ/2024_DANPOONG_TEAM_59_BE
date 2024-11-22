@@ -1,4 +1,4 @@
-package com.goorm.dapum.service;
+package com.goorm.dapum.infrastructure.jwt;
 
 import com.goorm.dapum.configuration.JwtConfig;
 import lombok.RequiredArgsConstructor;
