@@ -9,6 +9,7 @@ import com.goorm.dapum.domain.post.dto.PostResponse;
 import com.goorm.dapum.domain.post.dto.PostListResponse;
 import com.goorm.dapum.domain.post.entity.Post;
 import com.goorm.dapum.domain.post.repository.PostRepository;
+import com.goorm.dapum.domain.postLike.service.PostLikeService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class PostService {
     @Autowired
     private final CommentService commentService;
 
+    @Autowired
+    private final PostLikeService postLikeService;
+
     // 게시물 생성
     public void CreatePost(PostRequest request) {
         Member member = memberService.findMember();
@@ -39,7 +43,19 @@ public class PostService {
     public PostResponse GetPost(Long id) {
         Post post = postRepository.findById(id).orElse(null);
         List<CommentResponse> comments = commentService.getComments(post.getId());
-        return new PostResponse(post.getId(), post.getMember().getId(), post.getMember().getNickname(),post.getMember().getProfileImageUrl(), post.getTitle(), post.getContent(), post.getImageUrls(), post.getTags(), post.getUpdatedAt(), comments);
+        Long likeCount = postLikeService.getLikeCount(post.getId());
+        boolean liked = postLikeService.isLiked(post.getId());
+        return new PostResponse(
+                post.getId(),
+                post.getMember().getId(),
+                post.getMember().getNickname(),
+                post.getMember().getProfileImageUrl(),
+                post.getTitle(), post.getContent(),
+                post.getImageUrls(), post.getTags(),
+                post.getUpdatedAt(),
+                comments,
+                likeCount,
+                liked);
     }
 
     // 모든 게시물 가져오기
@@ -48,6 +64,9 @@ public class PostService {
         List<PostListResponse> responses = new ArrayList<>();
 
         for (Post post : posts) {
+            Long likeCount = postLikeService.getLikeCount(post.getId());
+            Long commentCount = commentService.getCommentsCount(post.getId());
+            boolean liked = postLikeService.isLiked(post.getId());
             PostListResponse response = new PostListResponse(
                     post.getId(),
                     post.getMember().getId(),
@@ -56,7 +75,10 @@ public class PostService {
                     post.getContent(),
                     post.getImageUrls(),
                     post.getTags(),
-                    post.getUpdatedAt()
+                    post.getUpdatedAt(),
+                    likeCount,
+                    commentCount,
+                    liked
             );
             responses.add(response);
         }

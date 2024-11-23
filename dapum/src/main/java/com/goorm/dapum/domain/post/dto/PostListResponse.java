@@ -11,6 +11,9 @@ public record PostListResponse(
         String content,
         List<String> imageUrls,
         List<String> tags,
-        LocalDateTime updateddAt
+        LocalDateTime updatedAt,
+        Long likeCount,
+        Long commentCount,
+        boolean isLiked
 ) {
 }
