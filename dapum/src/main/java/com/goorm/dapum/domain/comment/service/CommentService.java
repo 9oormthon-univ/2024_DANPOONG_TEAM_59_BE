@@ -8,13 +8,14 @@ import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.service.MemberService;
 import com.goorm.dapum.domain.post.entity.Post;
 import com.goorm.dapum.domain.post.repository.PostRepository;
-import com.goorm.dapum.domain.post.service.PostService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
