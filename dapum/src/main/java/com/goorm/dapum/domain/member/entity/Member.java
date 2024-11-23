@@ -1,5 +1,6 @@
 package com.goorm.dapum.domain.member.entity;
 
+import com.goorm.dapum.application.dto.member.Nickname;
 import com.goorm.dapum.core.base.BaseEntity;
 import com.goorm.dapum.domain.member.dto.MemberRequest;
 import jakarta.persistence.*;
@@ -28,4 +29,7 @@ public class Member extends BaseEntity {
         this.email = request.email();
     }
 
+    public void updateNickname(Nickname nickname) {
+        this.nickname = nickname.nickname();
+    }
 }
