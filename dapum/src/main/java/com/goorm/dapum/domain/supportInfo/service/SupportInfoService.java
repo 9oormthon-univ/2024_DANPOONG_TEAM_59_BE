@@ -20,7 +20,7 @@ public class SupportInfoService {
                 .stream()
                 .map(supportInfo -> new SupportInfoList(
                         supportInfo.getId(),
-                        supportInfo.getCategory(),
+                        supportInfo.getTags(),
                         supportInfo.getTitle(),
                         supportInfo.getDepartment(),
                         supportInfo.getUpdatedAt()

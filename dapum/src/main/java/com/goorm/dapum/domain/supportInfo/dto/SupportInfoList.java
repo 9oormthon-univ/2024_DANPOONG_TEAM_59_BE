@@ -5,7 +5,7 @@ import java.util.List;
 
 public record SupportInfoList(
         Long id,
-        List<String> category,
+        List<String> tags,
         String title,
         String department,
         LocalDateTime updatedAt

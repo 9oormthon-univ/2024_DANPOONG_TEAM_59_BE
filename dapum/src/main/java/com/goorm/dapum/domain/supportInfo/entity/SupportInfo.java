@@ -20,7 +20,7 @@ public class SupportInfo extends BaseEntity {
     @ElementCollection // List<String>을 JPA에서 매핑하기 위해 사용
     @CollectionTable(name = "support_info_category", joinColumns = @JoinColumn(name = "support_info_id"))
     @Column(name = "category", nullable = false)
-    private List<String> category = new ArrayList<>();
+    private List<String> tags = new ArrayList<>();
 
     @Column(nullable = false)
     private String department; // 지원하는 부서
@@ -34,7 +34,7 @@ public class SupportInfo extends BaseEntity {
     private String url;  // 필수는 아니므로 nullable 허용 // 필수는 아니므로 nullable 허용
 
     public SupportDetail detail() {
-        return new SupportDetail(this.id, this.category, this.department, this.title, this.content, this.url, this.getUpdatedAt());
+        return new SupportDetail(this.id, this.tags, this.department, this.title, this.content, this.url, this.getUpdatedAt());
     }
 }
 
