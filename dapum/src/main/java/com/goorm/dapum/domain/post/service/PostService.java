@@ -39,7 +39,7 @@ public class PostService {
     public PostResponse GetPost(Long id) {
         Post post = postRepository.findById(id).orElse(null);
         List<CommentResponse> comments = commentService.getComments(post.getId());
-        return new PostResponse(post.getId(), post.getMember().getId(), post.getTitle(), post.getContent(), post.getImageUrls(), post.getKeywords(), post.getUpdatedAt(), comments);
+        return new PostResponse(post.getId(), post.getMember().getId(), post.getMember().getNickname(),post.getMember().getProfileImageUrl(), post.getTitle(), post.getContent(), post.getImageUrls(), post.getKeywords(), post.getUpdatedAt(), comments);
     }
 
     // 모든 게시물 가져오기

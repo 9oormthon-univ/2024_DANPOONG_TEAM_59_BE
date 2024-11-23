@@ -8,6 +8,8 @@ import java.util.List;
 public record PostResponse(
         Long postId,
         Long memberId,
+        String nickname,
+        String profileImageUrl,
         String title,
         String content,
         List<String> imageUrls,
