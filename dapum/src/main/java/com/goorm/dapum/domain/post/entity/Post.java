@@ -39,7 +39,7 @@ public class Post extends BaseEntity {
 
     @ElementCollection // 값 타입 컬렉션 매핑
     @CollectionTable(name = "post_keywords", joinColumns = @JoinColumn(name = "post_id"))
-    @Column(name = "keyword")
+    @Column(name = "tag")
     private List<String> tags = new ArrayList<>();  // 게시글 키워드 목록
 
     public Post(Member member, PostRequest request) {
