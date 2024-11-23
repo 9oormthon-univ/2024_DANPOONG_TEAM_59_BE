@@ -1,5 +1,6 @@
 package com.goorm.dapum.domain.member.entity;
 
+import com.goorm.dapum.application.dto.member.Neighborhood;
 import com.goorm.dapum.application.dto.member.Nickname;
 import com.goorm.dapum.core.base.BaseEntity;
 import com.goorm.dapum.domain.member.dto.MemberRequest;
@@ -18,6 +19,7 @@ public class Member extends BaseEntity {
     private String email;
     private String nickname;
     private String profileImageUrl;
+    private String neighborhood;
 
     public Member() {
 
@@ -33,5 +35,9 @@ public class Member extends BaseEntity {
 
     public void updateNickname(Nickname nickname) {
         this.nickname = nickname.nickname();
+    }
+
+    public void updateNeighborhood(Neighborhood neighborhood) {
+        this.neighborhood = neighborhood.neighborhood();
     }
 }
