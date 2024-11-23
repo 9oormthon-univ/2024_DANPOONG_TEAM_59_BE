@@ -180,3 +180,5 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+dapum/src/main/resources/application-secret.yml

@@ -1,39 +1,26 @@
 spring:
-  application:
-    name: dapum
-
   jpa:
-    show-sql: true
     hibernate:
+      database-platform: org.hibernate.dialect.MySQL8Dialect
       ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
-        #dialect: org.hibernate.dialect.MySQLDialect
-
-  datasource:
-    url: jdbc:h2:mem:testdb  # ???? ??
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-
-    h2:
-    console:
-    enabled: true  # H2 ?? ???
-
-    #driver-class-name: com.mysql.cj.jdbc.Driver
-    #url: jdbc:mysql://localhost:3306/knu_mingle_db?serverTimezone=UTC&useSSL=false
-    #username: root
-    #password: dhtmddn123
-
+      show_sql: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 15MB
+      max-request-size: 15MB
   config:
     additional-location: classpath:application-secret.yml
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type: TRACE
 
-debug: true
-
-
-kakao:
-  key:
-    client-id: 0da6943dbdb9d9e7335d373903e6f350
-  redirect-uri: http://172.16.9.85:19006/Home
-
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  tomcat:
+    max-http-form-post-size: 15MB
