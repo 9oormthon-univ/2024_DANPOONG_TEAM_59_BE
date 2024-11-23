@@ -69,4 +69,9 @@ public class CommentService {
         return member.getId().equals(actorId);
     }
 
+    public long getCommentsCount(Long postId) {
+        Post post = postRepository.findById(postId).orElse(null);
+        return commentRepository.countByPost(post);
+    }
+
 }
