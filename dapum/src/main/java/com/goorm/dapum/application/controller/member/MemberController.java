@@ -3,9 +3,9 @@ package com.goorm.dapum.application.controller.member;
 import com.goorm.dapum.application.dto.member.Neighborhood;
 import com.goorm.dapum.application.dto.member.Nickname;
 import com.goorm.dapum.domain.member.service.MemberService;
+import com.goorm.dapum.domain.post.dto.PostListResponse;
 import com.goorm.dapum.domain.postLike.dto.PostLikeList;
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -40,5 +40,12 @@ public class MemberController {
     public ResponseEntity<List<PostLikeList>> getLikePost(){
         List<PostLikeList> lists = memberService.getPostLikeList();
         return ResponseEntity.ok().body(lists);
+    }
+
+    @GetMapping("/posts")
+    @Operation(summary = "내가 작성한 게시물 목록 조회")
+    public ResponseEntity<List<PostListResponse>> getMyPosts() {
+        List<PostListResponse> myPosts = memberService.getMyPosts();
+        return ResponseEntity.ok(myPosts); // HTTP 200 상태와 게시물 목록 반환
     }
 }

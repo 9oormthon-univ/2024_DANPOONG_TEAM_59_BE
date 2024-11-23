@@ -3,16 +3,15 @@ package com.goorm.dapum.domain.member.service;
 import com.goorm.dapum.application.dto.member.Neighborhood;
 import com.goorm.dapum.application.dto.member.Nickname;
 import com.goorm.dapum.domain.comment.repository.CommentRepository;
-import com.goorm.dapum.domain.comment.service.CommentService;
 import com.goorm.dapum.domain.member.dto.MemberRequest;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.repository.MemberRepository;
+import com.goorm.dapum.domain.post.dto.PostListResponse;
 import com.goorm.dapum.domain.post.entity.Post;
 import com.goorm.dapum.domain.post.repository.PostRepository;
 import com.goorm.dapum.domain.postLike.dto.PostLikeList;
 import com.goorm.dapum.domain.postLike.entity.PostLike;
 import com.goorm.dapum.domain.postLike.repository.PostLikeRepository;
-import com.goorm.dapum.domain.postLike.service.PostLikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -123,4 +122,39 @@ public class MemberService {
     public Member findById(Long receiverId) {
         return memberRepository.findById(receiverId).orElse(null);
     }
+
+    public List<PostListResponse> getMyPosts() {
+        Member member = findMember(); // 현재 로그인된 사용자
+        if (member == null) {
+            throw new IllegalArgumentException("로그인된 사용자가 없습니다.");
+        }
+
+        List<Post> posts = postRepository.findByMember(member); // 사용자가 작성한 게시물 목록 조회
+        List<PostListResponse> responses = new ArrayList<>();
+
+        for (Post post : posts) {
+            Long likeCount = getLikeCount(post.getId());
+            Long commentCount = getCommentsCount(post.getId());
+            boolean liked = isLiked(post.getId());
+
+            PostListResponse response = new PostListResponse(
+                    post.getId(),
+                    post.getMember().getId(),
+                    post.getMember().getNickname(),
+                    post.getTitle(),
+                    post.getContent(),
+                    post.getImageUrls(),
+                    post.getTags(),
+                    post.getUpdatedAt(),
+                    likeCount,
+                    commentCount,
+                    liked
+            );
+
+            responses.add(response);
+        }
+
+        return responses;
+    }
+
 }
