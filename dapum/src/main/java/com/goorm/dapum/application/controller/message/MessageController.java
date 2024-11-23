@@ -1,6 +1,7 @@
 package com.goorm.dapum.application.controller.message;
 
 import com.goorm.dapum.domain.member.entity.Member;
+import com.goorm.dapum.domain.message.dto.SendRequest;
 import com.goorm.dapum.domain.message.entity.Message;
 import com.goorm.dapum.domain.message.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,8 +20,8 @@ public class MessageController {
     // 메시지 전송
     @PostMapping("/send")
     @Operation(summary = "메시지 전송")
-    public ResponseEntity<Void> sendMessage(@RequestParam Long receiverId, @RequestBody String content) {
-        messageService.sendMessage(receiverId, content);
+    public ResponseEntity<Void> sendMessage(@RequestBody SendRequest sendRequest) {
+        messageService.sendMessage(sendRequest);
         return ResponseEntity.ok().build();
     }
 

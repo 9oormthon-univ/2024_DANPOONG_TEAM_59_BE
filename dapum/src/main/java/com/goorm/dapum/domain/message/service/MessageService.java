@@ -2,6 +2,7 @@ package com.goorm.dapum.domain.message.service;
 
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.service.MemberService;
+import com.goorm.dapum.domain.message.dto.SendRequest;
 import com.goorm.dapum.domain.message.entity.Message;
 import com.goorm.dapum.domain.message.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,15 +17,11 @@ public class MessageService {
     private final MemberService memberService;
 
     // 메시지 전송
-    public void sendMessage(Long receiverId, String content) {
+    public void sendMessage(SendRequest sendRequest) {
         Member sender = memberService.findMember();
-        Member receiver = memberService.findById(receiverId);
+        Member receiver = memberService.findById(sendRequest.receiverId());
 
-        Message message = new Message();
-        message.setSender(sender);
-        message.setReceiver(receiver);
-        message.setContent(content);
-        message.setRead(false);
+        Message message = new Message(sender, receiver, sendRequest.content(), false);
 
         messageRepository.save(message);
     }

@@ -34,6 +34,17 @@ public class Message {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;  // 전송 시간
 
+    public Message(Member sender, Member receiver, String content, boolean b) {
+        this.sender = sender;
+        this.receiver = receiver;
+        this.content = content;
+        this.isRead = b;
+    }
+
+    public Message() {
+
+    }
+
     // @PrePersist 메서드로 생성 시간 자동 설정
     @PrePersist
     public void prePersist() {
