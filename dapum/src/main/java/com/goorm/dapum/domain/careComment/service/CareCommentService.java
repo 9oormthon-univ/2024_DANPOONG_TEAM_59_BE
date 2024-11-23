@@ -17,8 +17,8 @@ public class CareCommentService {
         this.careCommentRepository = careCommentRepository;
     }
 
-    public List<CareComment> getCommentsByCareRequestId(Long careRequestId) {
-        return careCommentRepository.findByCareRequestId(careRequestId);
+    public List<CareComment> getCommentsByCareRequestId(Long carePostId) {
+        return careCommentRepository.findByCarePostId(carePostId);
     }
 
     public void saveComment(CareCommentRequest request) {

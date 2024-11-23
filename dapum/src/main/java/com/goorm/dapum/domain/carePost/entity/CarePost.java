@@ -1,11 +1,11 @@
-package com.goorm.dapum.domain.careRequest.entity;
+package com.goorm.dapum.domain.carePost.entity;
 
 import com.goorm.dapum.core.base.BaseEntity;
 import com.goorm.dapum.domain.member.entity.Member;
 import jakarta.persistence.*;
 
 @Entity
-public class CareRequest extends BaseEntity {
+public class CarePost extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
