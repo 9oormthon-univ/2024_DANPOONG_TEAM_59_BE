@@ -13,7 +13,7 @@ public record PostResponse(
         String title,
         String content,
         List<String> imageUrls,
-        List<String> keywords,
+        List<String> tags,
         LocalDateTime updateddAt,
         List<CommentResponse> commentResponse
 ) {

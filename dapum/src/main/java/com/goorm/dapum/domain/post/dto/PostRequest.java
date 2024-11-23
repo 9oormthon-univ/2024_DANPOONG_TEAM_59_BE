@@ -6,6 +6,6 @@ public record PostRequest(
         String title,
         String content,
         List<String> imageUrls,
-        List<String> keywords
+        List<String> tags
 ) {
 }
