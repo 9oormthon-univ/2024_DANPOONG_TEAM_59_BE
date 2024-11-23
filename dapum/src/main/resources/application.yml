@@ -31,6 +31,9 @@ spring:
 
 debug: true
 
+
 kakao:
-  client-id: 0da6943dbdb9d9e7335d373903e6f350
+  key:
+    client-id: 0da6943dbdb9d9e7335d373903e6f350
+  redirect-uri: http://172.16.9.85:19006/Home
 

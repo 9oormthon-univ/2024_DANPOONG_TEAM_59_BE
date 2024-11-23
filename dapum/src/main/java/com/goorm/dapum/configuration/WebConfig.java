@@ -37,7 +37,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "/v3/api-docs/**", // Swagger API 문서 경로 제외
                         "/favicon.ico",
                         "/auth/**",// favicon 경로 제외
-                        "/h2-console/**"
+                        "/h2-console/**",
+                        "/api/auth/kakao/callback"
                 );
     }
 }
