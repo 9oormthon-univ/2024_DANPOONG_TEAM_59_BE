@@ -2,6 +2,7 @@ package com.goorm.dapum.application.controller.post;
 
 import com.goorm.dapum.domain.post.dto.PostRequest;
 import com.goorm.dapum.domain.post.dto.PostResponse;
+import com.goorm.dapum.domain.post.dto.PostListResponse;
 import com.goorm.dapum.domain.post.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +39,8 @@ public class PostController {
     // 모든 게시물 가져오기
     @GetMapping
     @Operation(summary = "모든 게시물 가져오기")
-    public ResponseEntity<List<PostResponse>> getAllPosts() {
-        List<PostResponse> responses = postService.GetAllPosts();
+    public ResponseEntity<List<PostListResponse>> getAllPosts() {
+        List<PostListResponse> responses = postService.GetAllPosts();
         return ResponseEntity.ok(responses); // HTTP 200과 데이터 반환
     }
 

@@ -1,18 +1,15 @@
 package com.goorm.dapum.domain.post.dto;
 
-import com.goorm.dapum.domain.comment.dto.CommentResponse;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record PostResponse(
+public record PostListResponse(
         Long postId,
         Long memberId,
         String title,
         String content,
         List<String> imageUrls,
         List<String> keywords,
-        LocalDateTime updateddAt,
-        List<CommentResponse> commentResponse
+        LocalDateTime updateddAt
 ) {
 }

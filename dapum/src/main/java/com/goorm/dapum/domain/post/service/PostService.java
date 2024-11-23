@@ -1,9 +1,12 @@
 package com.goorm.dapum.domain.post.service;
 
+import com.goorm.dapum.domain.comment.dto.CommentResponse;
+import com.goorm.dapum.domain.comment.service.CommentService;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.service.MemberService;
 import com.goorm.dapum.domain.post.dto.PostRequest;
 import com.goorm.dapum.domain.post.dto.PostResponse;
+import com.goorm.dapum.domain.post.dto.PostListResponse;
 import com.goorm.dapum.domain.post.entity.Post;
 import com.goorm.dapum.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +23,11 @@ public class PostService {
     @Autowired
     private final PostRepository postRepository;
 
+    @Autowired
     private final MemberService memberService;
+
+    @Autowired
+    private final CommentService commentService;
 
     // 게시물 생성
     public void CreatePost(PostRequest request) {
@@ -31,22 +38,24 @@ public class PostService {
     // 특정 게시물 가져오기
     public PostResponse GetPost(Long id) {
         Post post = postRepository.findById(id).orElse(null);
-        return new PostResponse(post.getId(), post.getMember().getId(), post.getTitle(), post.getContent(), post.getImageUrls(), post.getKeywords());
+        List<CommentResponse> comments = commentService.getComments(post.getId());
+        return new PostResponse(post.getId(), post.getMember().getId(), post.getTitle(), post.getContent(), post.getImageUrls(), post.getKeywords(), post.getUpdatedAt(), comments);
     }
 
     // 모든 게시물 가져오기
-    public List<PostResponse> GetAllPosts() {
+    public List<PostListResponse> GetAllPosts() {
         List<Post> posts = postRepository.findAll();
-        List<PostResponse> responses = new ArrayList<>();
+        List<PostListResponse> responses = new ArrayList<>();
 
         for (Post post : posts) {
-            PostResponse response = new PostResponse(
+            PostListResponse response = new PostListResponse(
                     post.getId(),
                     post.getMember().getId(),
                     post.getTitle(),
                     post.getContent(),
                     post.getImageUrls(),
-                    post.getKeywords()
+                    post.getKeywords(),
+                    post.getUpdatedAt()
             );
             responses.add(response);
         }
@@ -91,4 +100,7 @@ public class PostService {
         return true;
     }
 
+    public Post findById(Long postId) {
+        return postRepository.findById(postId).orElse(null);
+    }
 }
