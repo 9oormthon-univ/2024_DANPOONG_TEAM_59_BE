@@ -19,12 +19,11 @@ public class CareCommentService {
         this.careCommentRepository = careCommentRepository;
     }
 
-    public List<CareCommentResponse> getCommentsByCareRequestId(Long careRequestId) {
-        List<CareComment> comments = careCommentRepository.findByCareRequestId(careRequestId);
+    public List<CareComment> getCommentsByCareRequestId(Long careRequestId) {
+        return careCommentRepository.findByCareRequestId(careRequestId);
     }
 
     public void saveComment(CareCommentRequest request) {
-        CareRequest =
         careCommentRepository.save(new CareComment());
     }
 
