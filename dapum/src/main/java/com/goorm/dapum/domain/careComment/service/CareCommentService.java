@@ -1,10 +1,8 @@
 package com.goorm.dapum.domain.careComment.service;
 
 import com.goorm.dapum.domain.careComment.dto.CareCommentRequest;
-import com.goorm.dapum.domain.careComment.dto.CareCommentResponse;
 import com.goorm.dapum.domain.careComment.entity.CareComment;
 import com.goorm.dapum.domain.careComment.repository.CareCommentRepository;
-import com.goorm.dapum.domain.careRequest.entity.CareRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

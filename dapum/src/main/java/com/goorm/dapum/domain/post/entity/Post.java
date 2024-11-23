@@ -2,6 +2,7 @@ package com.goorm.dapum.domain.post.entity;
 
 import com.goorm.dapum.core.base.BaseEntity;
 import com.goorm.dapum.domain.member.entity.Member;
+import com.goorm.dapum.domain.post.dto.PostRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,4 +41,19 @@ public class Post extends BaseEntity {
     @CollectionTable(name = "post_keywords", joinColumns = @JoinColumn(name = "post_id"))
     @Column(name = "keyword")
     private List<String> keywords = new ArrayList<>();  // 게시글 키워드 목록
+
+    public Post(Member member, PostRequest request) {
+        this.member = member;
+        this.title = request.title();
+        this.content = request.content();
+        this.imageUrls = request.imageUrls();
+        this.keywords = request.keywords();
+    }
+
+    public void update(PostRequest request) {
+        this.title = request.title();
+        this.content = request.content();
+        this.imageUrls = request.imageUrls();
+        this.keywords = request.keywords();
+    }
 }

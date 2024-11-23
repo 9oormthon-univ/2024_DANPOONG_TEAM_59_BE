@@ -4,7 +4,9 @@ import com.goorm.dapum.application.dto.member.Nickname;
 import com.goorm.dapum.core.base.BaseEntity;
 import com.goorm.dapum.domain.member.dto.MemberRequest;
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 public class Member extends BaseEntity {
     @Id
