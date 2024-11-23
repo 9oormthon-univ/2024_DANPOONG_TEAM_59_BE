@@ -48,4 +48,21 @@ public class MessageService {
         unreadMessages.forEach(message -> message.setRead(true));
         messageRepository.saveAll(unreadMessages);
     }
+
+    // 나와 메시지를 주고받은 사람 목록
+    public List<Member> getChatParticipants() {
+        Member loggedInMember = memberService.findMember();
+
+        // 발신자 또는 수신자로 등장한 메시지의 관련 회원 조회
+        List<Message> messages = messageRepository.findBySenderIdOrReceiverIdOrderByCreatedAt(
+                loggedInMember.getId(), loggedInMember.getId());
+
+        // 발신자와 수신자 중 나 자신을 제외한 고유 회원 목록 반환
+        return messages.stream()
+                .map(message -> message.getSender().getId().equals(loggedInMember.getId())
+                        ? message.getReceiver()
+                        : message.getSender())
+                .distinct()
+                .toList();
+    }
 }

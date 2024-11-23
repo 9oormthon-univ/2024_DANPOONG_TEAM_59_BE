@@ -3,10 +3,12 @@ package com.goorm.dapum.domain.message.entity;
 
 import com.goorm.dapum.domain.member.entity.Member;
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Getter
 @Setter
 @Entity
 public class Message {

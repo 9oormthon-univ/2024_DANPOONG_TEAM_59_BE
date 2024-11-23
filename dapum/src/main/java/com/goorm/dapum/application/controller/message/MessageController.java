@@ -1,5 +1,6 @@
 package com.goorm.dapum.application.controller.message;
 
+import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.message.entity.Message;
 import com.goorm.dapum.domain.message.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,6 +46,14 @@ public class MessageController {
     public ResponseEntity<Void> markMessagesAsRead(@PathVariable Long senderId) {
         messageService.markMessagesAsRead(senderId);
         return ResponseEntity.ok().build();
+    }
+
+    // 메시지를 주고받은 사람 목록 조회
+    @GetMapping("/participants")
+    @Operation(summary = "메시지를 주고받은 사람 목록 조회")
+    public ResponseEntity<List<Member>> getChatParticipants() {
+        List<Member> participants = messageService.getChatParticipants();
+        return ResponseEntity.ok(participants);
     }
 }
 
