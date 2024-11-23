@@ -120,4 +120,7 @@ public class MemberService {
         return existingLike != null && existingLike.getStatus();
     }
 
+    public Member findById(Long receiverId) {
+        return memberRepository.findById(receiverId).orElse(null);
+    }
 }
