@@ -1,6 +1,8 @@
 package com.goorm.dapum.domain.carePost.entity;
 
 import com.goorm.dapum.core.base.BaseEntity;
+import com.goorm.dapum.domain.careComment.entity.CareComment;
+import com.goorm.dapum.domain.carePostLike.entity.CarePostLike;
 import com.goorm.dapum.domain.member.entity.Member;
 import jakarta.persistence.*;
 import com.goorm.dapum.domain.carePost.dto.CarePostRequest;
@@ -30,6 +32,12 @@ public class CarePost extends BaseEntity {
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;  // 게시글 내용 (긴 텍스트 지원)
+
+    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CareComment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CarePostLike> likes = new ArrayList<>();
 
     @ElementCollection // 값 타입 컬렉션 매핑
     @CollectionTable(name = "care_post_image_urls", joinColumns = @JoinColumn(name = "care_post_id"))

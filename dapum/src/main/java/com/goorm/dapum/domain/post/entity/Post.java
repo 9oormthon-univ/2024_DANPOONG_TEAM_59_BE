@@ -1,8 +1,10 @@
 package com.goorm.dapum.domain.post.entity;
 
 import com.goorm.dapum.core.base.BaseEntity;
+import com.goorm.dapum.domain.comment.entity.Comment;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.post.dto.PostRequest;
+import com.goorm.dapum.domain.postLike.entity.PostLike;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,6 +33,12 @@ public class Post extends BaseEntity {
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;  // 게시글 내용 (긴 텍스트 지원)
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostLike> likes = new ArrayList<>();
 
     @ElementCollection // 값 타입 컬렉션 매핑
     @CollectionTable(name = "post_image_urls", joinColumns = @JoinColumn(name = "post_id"))
