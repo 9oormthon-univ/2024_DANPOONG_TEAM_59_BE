@@ -26,6 +26,7 @@ public class Member extends BaseEntity {
     private String nickname;
     private String profileImageUrl;
     private String neighborhood;
+    private Status status;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CarePost> carePosts = new ArrayList<>();
@@ -49,6 +50,7 @@ public class Member extends BaseEntity {
         this.nickname = request.nickname();
         this.profileImageUrl = request.profileImageUrl();
         this.email = request.email();
+        this.status = Status.ACTIVE;
     }
 
     public void updateNickname(Nickname nickname) {
