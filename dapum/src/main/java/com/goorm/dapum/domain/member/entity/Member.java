@@ -1,6 +1,5 @@
 package com.goorm.dapum.domain.member.entity;
 
-import com.goorm.dapum.application.dto.member.Neighborhood;
 import com.goorm.dapum.application.dto.member.Nickname;
 import com.goorm.dapum.core.base.BaseEntity;
 import com.goorm.dapum.domain.carePost.entity.CarePost;
@@ -25,7 +24,8 @@ public class Member extends BaseEntity {
     private String email;
     private String nickname;
     private String profileImageUrl;
-    private String neighborhood;
+    @Embedded
+    private Neighborhood neighborhood;
     private Status status;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -57,7 +57,11 @@ public class Member extends BaseEntity {
         this.nickname = nickname.nickname();
     }
 
+    public void updateStatus(Status status) {
+        this.status = status;
+    }
+
     public void updateNeighborhood(Neighborhood neighborhood) {
-        this.neighborhood = neighborhood.neighborhood();
+        this.neighborhood = neighborhood;
     }
 }

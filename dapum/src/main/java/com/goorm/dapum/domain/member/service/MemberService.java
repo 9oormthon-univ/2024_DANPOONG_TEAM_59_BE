@@ -1,10 +1,12 @@
 package com.goorm.dapum.domain.member.service;
 
-import com.goorm.dapum.application.dto.member.Neighborhood;
+import com.goorm.dapum.application.dto.member.NeighborhoodRequest;
 import com.goorm.dapum.application.dto.member.Nickname;
 import com.goorm.dapum.domain.comment.repository.CommentRepository;
 import com.goorm.dapum.domain.member.dto.MemberRequest;
 import com.goorm.dapum.domain.member.entity.Member;
+import com.goorm.dapum.domain.member.entity.Neighborhood;
+import com.goorm.dapum.domain.member.entity.Status;
 import com.goorm.dapum.domain.member.repository.MemberRepository;
 import com.goorm.dapum.domain.post.dto.PostListResponse;
 import com.goorm.dapum.domain.post.entity.Post;
@@ -55,12 +57,14 @@ public class MemberService {
         if (email == null) {
             return null;
         }
-        return memberRepository.findByEmail(email);
+        return findByEmail(email);
     }
 
-    public void updateNeighborhood(Neighborhood neighborhood) {
+    public void updateNeighborhood(NeighborhoodRequest neighborhoodRequest) {
         Member member = findMember();
+        Neighborhood neighborhood = new Neighborhood(neighborhoodRequest);
         member.updateNeighborhood(neighborhood);
+        memberRepository.save(member);
     }
 
     public List<PostLikeList> getPostLikeList() {
@@ -123,6 +127,10 @@ public class MemberService {
         return memberRepository.findById(receiverId).orElse(null);
     }
 
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
+
     public List<PostListResponse> getMyPosts() {
         Member member = findMember(); // 현재 로그인된 사용자
         if (member == null) {
@@ -157,4 +165,8 @@ public class MemberService {
         return responses;
     }
 
+    public void updateStatus(Member member, Status status) {
+        member.updateStatus(Status.ACTIVE);
+        memberRepository.save(member);
+    }
 }

@@ -4,6 +4,8 @@ package com.goorm.dapum.domain.auth.service;
 import com.goorm.dapum.application.dto.auth.KakaoLoginRequest;
 import com.goorm.dapum.application.dto.auth.KakaoLoginResponse;
 import com.goorm.dapum.domain.member.dto.MemberRequest;
+import com.goorm.dapum.domain.member.entity.Member;
+import com.goorm.dapum.domain.member.entity.Status;
 import com.goorm.dapum.domain.member.service.MemberService;
 import com.goorm.dapum.infrastructure.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,10 @@ public class KakaoAuthService {
             String nickname = "새가입자" + request.id();
             memberService.create(new MemberRequest(request.email(), request.id(), request.nickname(), nickname, request.profile_image_url()));
         }
+        Member member = memberService.findByEmail(request.email());
+        if(member.getStatus() == Status.DELETED)
+            memberService.updateStatus(member, Status.ACTIVE);
+
         return new KakaoLoginResponse(jwtService.generateToken(request.email()));
     }
 }
