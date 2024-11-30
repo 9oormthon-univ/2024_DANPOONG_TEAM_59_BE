@@ -2,7 +2,9 @@ package com.goorm.dapum.domain.member.entity;
 
 import com.goorm.dapum.application.dto.member.NeighborhoodRequest;
 import jakarta.persistence.Embeddable;
+import lombok.Getter;
 
+@Getter
 @Embeddable
 public class Neighborhood {
     private String province;

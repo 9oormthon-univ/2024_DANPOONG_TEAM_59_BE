@@ -14,6 +14,7 @@ import com.goorm.dapum.domain.post.repository.PostRepository;
 import com.goorm.dapum.domain.postLike.dto.PostLikeList;
 import com.goorm.dapum.domain.postLike.entity.PostLike;
 import com.goorm.dapum.domain.postLike.repository.PostLikeRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MemberService {
     @Autowired
     private MemberRepository memberRepository;
@@ -49,6 +51,9 @@ public class MemberService {
     public void updateNickname(Nickname nickname) {
         Member member = findMember();
         member.updateNickname(nickname);
+        System.out.println("사용자 이름 " + member.getKakaoName());
+        System.out.println("사용자 닉네임 " + member.getNickname());
+        System.out.println("입력한 닉네임 " + nickname.nickname());
         memberRepository.save(member);
     }
 
@@ -65,6 +70,10 @@ public class MemberService {
         Neighborhood neighborhood = new Neighborhood(neighborhoodRequest);
         member.updateNeighborhood(neighborhood);
         memberRepository.save(member);
+        System.out.println("사용자 이름 " + member.getKakaoName());
+        System.out.println("시/도 " + member.getNeighborhood().getProvince());
+        System.out.println("구/군 " + member.getNeighborhood().getCity());
+        System.out.println("읍/면/동 " + member.getNeighborhood().getDistrict());
     }
 
     public List<PostLikeList> getPostLikeList() {
@@ -149,6 +158,7 @@ public class MemberService {
                     post.getId(),
                     post.getMember().getId(),
                     post.getMember().getNickname(),
+                    post.getMember().getProfileImageUrl(),
                     post.getTitle(),
                     post.getContent(),
                     post.getImageUrls(),
