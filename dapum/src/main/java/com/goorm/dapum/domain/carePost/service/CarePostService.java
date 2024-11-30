@@ -74,6 +74,7 @@ public class CarePostService {
                     carePost.getId(),
                     carePost.getMember().getId(),
                     carePost.getMember().getNickname(),
+                    carePost.getMember().getProfileImageUrl(),
                     carePost.getTitle(),
                     carePost.getContent(),
                     carePost.getImageUrls(),

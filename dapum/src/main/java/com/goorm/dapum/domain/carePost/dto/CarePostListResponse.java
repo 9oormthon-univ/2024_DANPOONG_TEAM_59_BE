@@ -7,6 +7,7 @@ public record CarePostListResponse(
         Long carePostId,
         Long memberId,
         String nickname,
+        String kakaoProfileImageUrl,
         String title,
         String content,
         List<String> imageUrls,

@@ -7,6 +7,9 @@ import com.goorm.dapum.domain.member.entity.Member;
 import jakarta.persistence.*;
 import com.goorm.dapum.domain.carePost.dto.CarePostRequest;
 import lombok.*;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +23,10 @@ public class CarePost extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "care_post_id")  // 컬럼 이름을 명확히 수정
+    @Column(name = "care_post_id")
     private Long id;  // 게시글 고유 ID
 
-    @ManyToOne(fetch = FetchType.LAZY)  // Lazy 로딩으로 성능 최적화
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;  // 작성자 (Member 엔티티와의 관계)
 
@@ -39,15 +42,24 @@ public class CarePost extends BaseEntity {
     @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CarePostLike> likes = new ArrayList<>();
 
-    @ElementCollection // 값 타입 컬렉션 매핑
+    @ElementCollection
     @CollectionTable(name = "care_post_image_urls", joinColumns = @JoinColumn(name = "care_post_id"))
     @Column(name = "image_url")
     private List<String> imageUrls = new ArrayList<>();  // 게시글 이미지 URL 목록
 
-    @ElementCollection // 값 타입 컬렉션 매핑
+    @ElementCollection
     @CollectionTable(name = "care_post_keywords", joinColumns = @JoinColumn(name = "care_post_id"))
     @Column(name = "tag")
     private List<String> tags = new ArrayList<>();  // 게시글 키워드 목록
+
+    @Column(nullable = false)
+    private LocalDate careDate;  // 돌봄을 원하는 날짜
+
+    @Column(nullable = false)
+    private LocalTime startTime;  // 돌봄 시작 시간
+
+    @Column(nullable = false)
+    private LocalTime endTime;  // 돌봄 끝나는 시간
 
     // 생성자: DTO를 사용하여 엔티티 생성
     public CarePost(Member member, CarePostRequest request) {
@@ -56,6 +68,9 @@ public class CarePost extends BaseEntity {
         this.content = request.content();
         this.imageUrls = request.imageUrls();
         this.tags = request.tags();
+        this.careDate = request.careDate();
+        this.startTime = request.startTime();
+        this.endTime = request.endTime();
     }
 
     // 업데이트 메서드: DTO를 사용하여 엔티티 업데이트
@@ -64,5 +79,8 @@ public class CarePost extends BaseEntity {
         this.content = request.content();
         this.imageUrls = request.imageUrls();
         this.tags = request.tags();
+        this.careDate = request.careDate();
+        this.startTime = request.startTime();
+        this.endTime = request.endTime();
     }
 }
