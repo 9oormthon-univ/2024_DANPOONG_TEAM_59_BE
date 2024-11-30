@@ -1,5 +1,6 @@
 package com.goorm.dapum.application.controller.post;
 
+import com.goorm.dapum.domain.PostReport.dto.PostReportRequest;
 import com.goorm.dapum.domain.post.dto.PostRequest;
 import com.goorm.dapum.domain.post.dto.PostResponse;
 import com.goorm.dapum.domain.post.dto.PostListResponse;
@@ -30,7 +31,7 @@ public class PostController {
 
     // 특정 게시물 가져오기
     @GetMapping("/{postId}")
-    @Operation(summary = "특정 게시물 가져오기")
+    @Operation(summary = "특정 게시물 내용 가져오기")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long postId) {
         PostResponse response = postService.GetPost(postId);
         return ResponseEntity.ok(response); // HTTP 200과 데이터 반환
@@ -46,7 +47,7 @@ public class PostController {
 
     // 게시물 업데이트
     @PutMapping("/{postId}")
-    @Operation(summary = "특정 게시물 업데이트")
+    @Operation(summary = "게시물 업데이트")
     public ResponseEntity<Void> updatePost(@PathVariable Long postId, @RequestBody PostRequest request) throws BadRequestException {
         postService.UpdatePost(postId, request);
         return ResponseEntity.ok().build(); // HTTP 200 반환
@@ -54,9 +55,17 @@ public class PostController {
 
     // 게시물 삭제
     @DeleteMapping("/{postId}")
-    @Operation(summary = "특정 게시물 삭제")
+    @Operation(summary = "게시물 삭제")
     public ResponseEntity<Void> deletePost(@PathVariable Long postId) throws BadRequestException {
         postService.DeletePost(postId);
+        return ResponseEntity.ok().build(); // HTTP 200 반환
+    }
+
+    // 게시물 신고
+    @PostMapping("/{postId}/report")
+    @Operation(summary = "게시물 신고")
+    public ResponseEntity<Void> reportPost(@PathVariable Long postId, @RequestBody PostReportRequest request) {
+        postService.reportPost(request);
         return ResponseEntity.ok().build(); // HTTP 200 반환
     }
 }

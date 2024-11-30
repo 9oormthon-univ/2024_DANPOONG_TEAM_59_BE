@@ -1,5 +1,8 @@
 package com.goorm.dapum.domain.post.service;
 
+import com.goorm.dapum.domain.PostReport.dto.PostReportRequest;
+import com.goorm.dapum.domain.PostReport.entity.PostReport;
+import com.goorm.dapum.domain.PostReport.repository.PostReportRepository;
 import com.goorm.dapum.domain.comment.dto.CommentResponse;
 import com.goorm.dapum.domain.comment.service.CommentService;
 import com.goorm.dapum.domain.member.entity.Member;
@@ -32,6 +35,9 @@ public class PostService {
 
     @Autowired
     private final PostLikeService postLikeService;
+
+    @Autowired
+    private final PostReportRepository postReportRepository;
 
     // 게시물 생성
     public void CreatePost(PostRequest request) {
@@ -126,4 +132,27 @@ public class PostService {
     public Post findById(Long postId) {
         return postRepository.findById(postId).orElse(null);
     }
+
+    // 게시물 신고
+    public void reportPost(PostReportRequest request) {
+        Member member = memberService.findMember(); // 현재 로그인한 사용자
+
+        // 신고 대상 게시글 확인
+        Post post = postRepository.findById(request.postId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다."));
+
+        // 중복 신고 방지
+        if (postReportRepository.findByPostIdAndMemberId(post.getId(), member.getId()).isPresent()) {
+            throw new IllegalArgumentException("이미 신고한 게시글입니다.");
+        }
+
+        // 신고 저장
+        PostReport report = PostReport.builder()
+                .post(post)
+                .member(member)
+                .reason(request.reason())
+                .build();
+        postReportRepository.save(report);
+    }
 }
+
