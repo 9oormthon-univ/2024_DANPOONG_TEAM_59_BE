@@ -1,6 +1,6 @@
 package com.goorm.dapum.application.controller.member;
 
-import com.goorm.dapum.application.dto.member.Neighborhood;
+import com.goorm.dapum.application.dto.member.NeighborhoodRequest;
 import com.goorm.dapum.application.dto.member.Nickname;
 import com.goorm.dapum.domain.member.service.MemberService;
 import com.goorm.dapum.domain.post.dto.PostListResponse;
@@ -30,8 +30,8 @@ public class MemberController {
 
     @PutMapping("/neighborhood")
     @Operation(summary = "동네 입력")
-    public ResponseEntity<?> updateNeighborhood(@RequestBody Neighborhood neighborhood) {
-        memberService.updateNeighborhood(neighborhood);
+    public ResponseEntity<?> updateNeighborhood(@RequestBody NeighborhoodRequest neighborhoodRequest) {
+        memberService.updateNeighborhood(neighborhoodRequest);
         return ResponseEntity.ok().build();
     }
 
