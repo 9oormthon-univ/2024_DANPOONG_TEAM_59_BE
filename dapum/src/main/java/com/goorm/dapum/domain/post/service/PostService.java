@@ -77,6 +77,7 @@ public class PostService {
                     post.getId(),
                     post.getMember().getId(),
                     post.getMember().getNickname(),
+                    post.getMember().getProfileImageUrl(),
                     post.getTitle(),
                     post.getContent(),
                     post.getImageUrls(),

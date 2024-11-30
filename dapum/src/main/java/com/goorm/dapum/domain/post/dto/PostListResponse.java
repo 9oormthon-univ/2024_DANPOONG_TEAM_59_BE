@@ -7,6 +7,7 @@ public record PostListResponse(
         Long postId,
         Long memberId,
         String nickname,
+        String profileImageUrl,
         String title,
         String content,
         List<String> imageUrls,
