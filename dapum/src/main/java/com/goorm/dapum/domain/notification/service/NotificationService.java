@@ -44,10 +44,4 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
-    public List<NotificationToken> getPushNotificationTokens() {
-        return notificationRepository.findByPushEnabledTrue()
-                .stream()
-                .map(notification -> new NotificationToken(notification.getNotificationToken()))
-                .collect(Collectors.toList());
-    }
 }

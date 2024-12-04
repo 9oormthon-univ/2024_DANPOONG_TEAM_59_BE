@@ -27,18 +27,13 @@ public class Notification extends BaseEntity {
     @Column(name = "is_notification_enabled", nullable = false)
     private boolean notificationEnabled;
 
-    @Column(name = "is_push_enabled", nullable = false)
-    private boolean pushEnabled;
-
     public Notification(Member member, NotificationRequest request) {
         this.member = member;
         this.notificationToken = request.token();
         this.notificationEnabled = request.notificationEnabled();
-        this.pushEnabled = request.pushEnabled();
     }
 
     public void update(NotificationSetting setting) {
         this.notificationEnabled = setting.notificationEnabled();
-        this.pushEnabled = setting.pushEnabled();
     }
 }

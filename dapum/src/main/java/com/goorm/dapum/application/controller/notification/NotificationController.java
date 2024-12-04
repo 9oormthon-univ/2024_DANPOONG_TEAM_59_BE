@@ -35,18 +35,10 @@ public class NotificationController {
     }
 
     @GetMapping("/tokens/in-app")
-    @Operation(summary = "인앱 알람 토큰 전달")
+    @Operation(summary = "notification 알람 토큰 전달")
     public ResponseEntity<List<NotificationToken>> getInAppNotificationTokens() {
         List<NotificationToken> tokens = notificationService.getInAppNotificationTokens();
         return ResponseEntity.ok(tokens);
     }
-
-    @GetMapping("/tokens/push")
-    @Operation(summary = "푸시 알람 토큰 전달")
-    public ResponseEntity<List<NotificationToken>> getPushNotificationTokens() {
-        List<NotificationToken> tokens = notificationService.getPushNotificationTokens();
-        return ResponseEntity.ok(tokens);
-    }
-
 
 }

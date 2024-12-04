@@ -14,6 +14,5 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     Collection<Notification> findByNotificationEnabledTrue();
 
-    Collection<Notification> findByPushEnabledTrue();
 }
 
