@@ -5,6 +5,7 @@ import com.goorm.dapum.core.base.BaseEntity;
 import com.goorm.dapum.domain.carePost.entity.CarePost;
 import com.goorm.dapum.domain.member.dto.MemberRequest;
 import com.goorm.dapum.domain.memberReview.entity.MemberReview;
+import com.goorm.dapum.domain.notification.entity.Notification;
 import com.goorm.dapum.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -39,6 +40,9 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "reviewedMember", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberReview> reviewsReceived = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> notifications = new ArrayList<>();
 
     public Member() {
 
