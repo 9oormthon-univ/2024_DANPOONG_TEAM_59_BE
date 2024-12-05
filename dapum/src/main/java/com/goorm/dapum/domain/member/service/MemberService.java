@@ -2,6 +2,7 @@ package com.goorm.dapum.domain.member.service;
 
 import com.goorm.dapum.application.dto.member.NeighborhoodRequest;
 import com.goorm.dapum.application.dto.member.Nickname;
+import com.goorm.dapum.domain.carePost.dto.CarePostListResponse;
 import com.goorm.dapum.domain.comment.repository.CommentRepository;
 import com.goorm.dapum.domain.member.dto.MemberRequest;
 import com.goorm.dapum.domain.member.entity.Member;
@@ -14,6 +15,8 @@ import com.goorm.dapum.domain.post.repository.PostRepository;
 import com.goorm.dapum.domain.postLike.dto.PostLikeList;
 import com.goorm.dapum.domain.postLike.entity.PostLike;
 import com.goorm.dapum.domain.postLike.repository.PostLikeRepository;
+import com.goorm.dapum.domain.userPoint.repository.UserPointRepository;
+import com.goorm.dapum.domain.userPoint.service.UserPointService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +43,13 @@ public class MemberService {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private UserPointService userPointService;
+
     public void create(MemberRequest request) {
-        memberRepository.save(new Member(request));
+        Member member =new Member(request);
+        userPointService.createInitialPoint(member);
+        memberRepository.save(member);
     }
 
     public boolean existsByEmail(String email) {
@@ -179,4 +187,9 @@ public class MemberService {
         member.updateStatus(Status.ACTIVE);
         memberRepository.save(member);
     }
+
+/*    public List<CarePostListResponse> getMyCares() {
+        Member member = findMember();
+
+    }*/
 }

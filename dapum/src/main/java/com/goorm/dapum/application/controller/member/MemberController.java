@@ -2,6 +2,7 @@ package com.goorm.dapum.application.controller.member;
 
 import com.goorm.dapum.application.dto.member.NeighborhoodRequest;
 import com.goorm.dapum.application.dto.member.Nickname;
+import com.goorm.dapum.domain.carePost.dto.CarePostListResponse;
 import com.goorm.dapum.domain.member.service.MemberService;
 import com.goorm.dapum.domain.post.dto.PostListResponse;
 import com.goorm.dapum.domain.postLike.dto.PostLikeList;
@@ -48,4 +49,13 @@ public class MemberController {
         List<PostListResponse> myPosts = memberService.getMyPosts();
         return ResponseEntity.ok(myPosts); // HTTP 200 상태와 게시물 목록 반환
     }
+
+/*    @GetMapping("/care")
+    @Operation(summary = "돌봄 목록 가져오기")
+    public ResponseEntity<List<CarePostListResponse>> getMyCarePosts() {
+        List<CarePostListResponse> myCares = memberService.getMyCares();
+        return ResponseEntity.ok().body(myCares);
+    }*/
+
+
 }
