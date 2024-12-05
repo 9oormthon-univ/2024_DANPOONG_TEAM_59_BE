@@ -42,7 +42,7 @@ public class Post extends BaseEntity {
 
     @ElementCollection // 값 타입 컬렉션 매핑
     @CollectionTable(name = "post_image_urls", joinColumns = @JoinColumn(name = "post_id"))
-    @Column(name = "image_url")
+    @Column(name = "image_url", length = 2083)
     private List<String> imageUrls = new ArrayList<>();  // 게시글 이미지 URL 목록
 
     @ElementCollection // 값 타입 컬렉션 매핑

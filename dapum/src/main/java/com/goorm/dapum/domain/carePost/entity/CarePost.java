@@ -44,7 +44,7 @@ public class CarePost extends BaseEntity {
 
     @ElementCollection
     @CollectionTable(name = "care_post_image_urls", joinColumns = @JoinColumn(name = "care_post_id"))
-    @Column(name = "image_url")
+    @Column(name = "image_url", length = 2083)
     private List<String> imageUrls = new ArrayList<>();  // 게시글 이미지 URL 목록
 
     @ElementCollection
