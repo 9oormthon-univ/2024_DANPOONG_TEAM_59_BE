@@ -1,6 +1,7 @@
 package com.goorm.dapum.domain.message.entity;
 
 
+import com.goorm.dapum.domain.chatroom.entity.ChatRoom;
 import com.goorm.dapum.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,6 +17,10 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "message_id")
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_room_id", nullable = false)
+    private ChatRoom chatRoom;  // 메시지가 속한 채팅방
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id", nullable = false)
