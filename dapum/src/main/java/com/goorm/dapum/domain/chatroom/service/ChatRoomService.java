@@ -82,7 +82,7 @@ public class ChatRoomService {
         // ChatRoomResponse에 채팅방 정보와 메시지 내용 포함
         return ChatRoomResponse.from(chatRoom, messages.stream()
                 .map(MessageResponse::new)
-                .toList(), member1);  // from 메서드를 사용하여 ChatRoomResponse 생성
+                .toList(), member1, false, false);  // from 메서드를 사용하여 ChatRoomResponse 생성
     }
 
     // 채팅 목록 가져오기

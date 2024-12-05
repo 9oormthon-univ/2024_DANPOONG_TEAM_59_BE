@@ -20,9 +20,17 @@ public record ChatRoomResponse(
         String title,             // 게시글의 제목 (CarePost 또는 Post)
         String state,             // 게시글 상태 (CarePost 또는 Post 상태)
         LocalDateTime updatedAt,  // 게시글 마지막 수정 시간
+        boolean tradeCompleted,  // 거래가 완료되었으면 true, 아니면 false
+        boolean reviewCompleted, // 후기가 작성되었으면 true, 아니면 false
         List<MessageResponse> messages  // 메시지 목록
 ) {
-    public static ChatRoomResponse from(ChatRoom chatRoom, List<MessageResponse> messages, Member currentUser) {
+    public static ChatRoomResponse from(
+            ChatRoom chatRoom,
+            List<MessageResponse> messages,
+            Member currentUser,
+            boolean tradeCompleted,
+            boolean reviewCompleted
+    ) {
         // 상대방 정보 추출
         String otherUserName = chatRoom.getMember1().equals(currentUser)
                 ? chatRoom.getMember2().getNickname()
@@ -59,6 +67,8 @@ public record ChatRoomResponse(
                 title,
                 state,
                 updatedAt,
+                tradeCompleted,  // 거래 완료 여부
+                reviewCompleted, // 후기 작성 완료 여부
                 messages
         );
     }
