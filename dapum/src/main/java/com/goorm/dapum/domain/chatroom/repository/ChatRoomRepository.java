@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ChatRoomRepository extends CrudRepository<ChatRoom, Long> {
-    Optional<ChatRoom> findByMembers(Member member1, Member member2);
+    @Query("SELECT c FROM ChatRoom c WHERE (c.member1 = :member1 AND c.member2 = :member2) OR (c.member1 = :member2 AND c.member2 = :member1)")
+    Optional<ChatRoom> findByMembers(@Param("member1") Member member1, @Param("member2") Member member2);
+
 
     @Query("SELECT c FROM ChatRoom c WHERE c.member1 = :member OR c.member2 = :member")
     List<ChatRoom> findByMember(@Param("member") Member member);
