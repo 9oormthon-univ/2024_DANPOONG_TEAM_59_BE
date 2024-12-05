@@ -7,6 +7,7 @@ public record ChatRoomList(
         Long chatRoomId,
         String otherUserName,
         String otherUserNeighborhood,
+        String profileImage,
         String lastMessage,
         int unreadMessageCount
 ) {

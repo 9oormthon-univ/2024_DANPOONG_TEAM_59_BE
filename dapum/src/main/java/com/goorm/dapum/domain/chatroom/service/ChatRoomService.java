@@ -72,6 +72,7 @@ public class ChatRoomService {
                     .chatRoomId(chatRoom.getId())
                     .otherUserName(otherMember.getKakaoName())
                     .otherUserNeighborhood(otherMember.getNeighborhood() != null ? otherMember.getNeighborhood().toString() : "미설정")
+                    .profileImage(otherMember.getProfileImageUrl())
                     .lastMessage(lastMessage != null ? lastMessage.getContent() : "대화 없음")
                     .unreadMessageCount(unreadMessageCount)
                     .build();
