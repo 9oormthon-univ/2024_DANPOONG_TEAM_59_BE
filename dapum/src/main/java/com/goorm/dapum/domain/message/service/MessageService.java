@@ -2,7 +2,6 @@ package com.goorm.dapum.domain.message.service;
 
 import com.goorm.dapum.domain.chatroom.entity.ChatRoom;
 import com.goorm.dapum.domain.chatroom.repository.ChatRoomRepository;
-import com.goorm.dapum.domain.chatroom.service.ChatRoomService;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.service.MemberService;
 import com.goorm.dapum.domain.message.dto.SendRequest;
@@ -27,27 +26,15 @@ public class MessageService {
     private ChatRoomRepository chatRoomRepository;
 
     // 메시지 전송
-    public Message sendMessage(Long chatRoomId, Member sender, String content) {
+    public boolean sendMessage(Long chatRoomId, SendRequest request) {
+        Member sender = memberService.findMember();
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
 
-        Message message = new Message(sender, chatRoom.getMember1().equals(sender) ? chatRoom.getMember2() : chatRoom.getMember1(), content, false);
+        Message message = new Message(sender, chatRoom.getMember1().equals(sender) ? chatRoom.getMember2() : chatRoom.getMember1(), request.content(), false);
         message.setChatRoom(chatRoom);
-        return messageRepository.save(message);
-    }
-
-    // 대화 내역 조회
-    public List<Message> getMessages(Long chatRoomId) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
-
-        return messageRepository.findByChatRoomIdOrderByCreatedAtAsc(chatRoom.getId());
-    }
-
-    // 읽지 않은 메시지 수
-    public long getUnreadMessageCount() {
-        Long receiverId = memberService.findMember().getId();
-        return messageRepository.countByReceiverIdAndIsReadFalse(receiverId);
+        messageRepository.save(message);
+        return true;
     }
 
     public void markMessagesAsRead(Long chatRoomId, Member receiver) {
