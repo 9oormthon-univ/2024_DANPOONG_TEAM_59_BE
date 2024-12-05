@@ -42,19 +42,15 @@ public class CarePost extends BaseEntity {
     @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CarePostLike> likes = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "caregiver_id")
-    private Member caregiver; // 돌봄을 제공한 사용자
-
     @ElementCollection
     @CollectionTable(name = "care_post_image_urls", joinColumns = @JoinColumn(name = "care_post_id"))
     @Column(name = "image_url", length = 2083)
     private List<String> imageUrls = new ArrayList<>();  // 게시글 이미지 URL 목록
 
-    @ElementCollection
-    @CollectionTable(name = "care_post_keywords", joinColumns = @JoinColumn(name = "care_post_id"))
-    @Column(name = "tag")
-    private List<String> tags = new ArrayList<>();  // 게시글 키워드 목록
+    @Column(nullable = false)
+    private Tag tag;  // 게시글 키워드 목록
+
+    private boolean isEmergency; // 긴급 돌봄 유무
 
     @Column(nullable = false)
     private LocalDate careDate;  // 돌봄을 원하는 날짜
