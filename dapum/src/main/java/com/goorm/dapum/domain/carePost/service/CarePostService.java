@@ -10,6 +10,7 @@ import com.goorm.dapum.domain.carePost.repository.CarePostRepository;
 import com.goorm.dapum.domain.carePostLike.service.CarePostLikeService;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.service.MemberService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CarePostService {
 
     @Autowired

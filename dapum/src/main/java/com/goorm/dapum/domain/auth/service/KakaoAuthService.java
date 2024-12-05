@@ -8,12 +8,14 @@ import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.entity.Status;
 import com.goorm.dapum.domain.member.service.MemberService;
 import com.goorm.dapum.infrastructure.jwt.JwtService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class KakaoAuthService {
     @Autowired
     private final JwtService jwtService;

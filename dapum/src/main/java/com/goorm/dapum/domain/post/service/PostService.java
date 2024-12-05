@@ -13,6 +13,7 @@ import com.goorm.dapum.domain.post.dto.PostListResponse;
 import com.goorm.dapum.domain.post.entity.Post;
 import com.goorm.dapum.domain.post.repository.PostRepository;
 import com.goorm.dapum.domain.postLike.service.PostLikeService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PostService {
     @Autowired
     private final PostRepository postRepository;

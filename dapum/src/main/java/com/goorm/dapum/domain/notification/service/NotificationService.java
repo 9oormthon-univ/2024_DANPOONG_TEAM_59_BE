@@ -7,6 +7,7 @@ import com.goorm.dapum.domain.notification.dto.NotificationSetting;
 import com.goorm.dapum.domain.notification.dto.NotificationToken;
 import com.goorm.dapum.domain.notification.entity.Notification;
 import com.goorm.dapum.domain.notification.repository.NotificationRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class NotificationService {
     @Autowired
     private final NotificationRepository notificationRepository;

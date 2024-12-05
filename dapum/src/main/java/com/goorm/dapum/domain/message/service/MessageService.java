@@ -5,6 +5,7 @@ import com.goorm.dapum.domain.member.service.MemberService;
 import com.goorm.dapum.domain.message.dto.SendRequest;
 import com.goorm.dapum.domain.message.entity.Message;
 import com.goorm.dapum.domain.message.repository.MessageRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MessageService {
     private final MessageRepository messageRepository;
     private final MemberService memberService;
