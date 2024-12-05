@@ -22,4 +22,17 @@ public class UserPointService {
                 .build();
         userPointRepository.save(userPoint);
     }
+
+    // 포인트 차감
+    public void deductPoints(Member member, int points) {
+        UserPoint userPoint = userPointRepository.findByMember(member)
+                .orElseThrow(() -> new IllegalStateException("회원의 포인트를 찾을 수 없습니다."));
+
+        if (userPoint.getPoints() < points) {
+            throw new IllegalStateException("포인트가 부족합니다.");
+        }
+
+        userPoint.setPoints(userPoint.getPoints() - points);
+        userPointRepository.save(userPoint);
+    }
 }
