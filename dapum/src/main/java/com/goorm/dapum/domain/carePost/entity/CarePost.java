@@ -42,6 +42,10 @@ public class CarePost extends BaseEntity {
     @OneToMany(mappedBy = "carePost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CarePostLike> likes = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "caregiver_id")
+    private Member caregiver; // 돌봄을 제공한 사용자
+
     @ElementCollection
     @CollectionTable(name = "care_post_image_urls", joinColumns = @JoinColumn(name = "care_post_id"))
     @Column(name = "image_url", length = 2083)
