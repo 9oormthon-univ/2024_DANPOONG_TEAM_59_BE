@@ -16,5 +16,9 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     // 읽지 않은 메시지 개수
     long countByReceiverIdAndIsReadFalse(Long receiverId);
+
+    List<Message> findByChatRoomIdOrderByCreatedAtAsc(Long id);
+
+    List<Message> findByChatRoomIdAndReceiverIdAndIsReadFalse(Long chatRoomId, Long id);
 }
 
