@@ -67,7 +67,8 @@ public class CarePost extends BaseEntity {
         this.title = request.title();
         this.content = request.content();
         this.imageUrls = request.imageUrls();
-        this.tags = request.tags();
+        this.tag = request.tag(); // 추가된 필드
+        this.isEmergency = request.isEmergency(); // 추가된 필드
         this.careDate = request.careDate();
         this.startTime = request.startTime();
         this.endTime = request.endTime();
@@ -78,7 +79,8 @@ public class CarePost extends BaseEntity {
         this.title = request.title();
         this.content = request.content();
         this.imageUrls = request.imageUrls();
-        this.tags = request.tags();
+        this.tag = request.tag(); // 추가된 필드
+        this.isEmergency = request.isEmergency(); // 추가된 필드
         this.careDate = request.careDate();
         this.startTime = request.startTime();
         this.endTime = request.endTime();
