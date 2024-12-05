@@ -2,8 +2,14 @@ package com.goorm.dapum.domain.member.service;
 
 import com.goorm.dapum.application.dto.member.NeighborhoodRequest;
 import com.goorm.dapum.application.dto.member.Nickname;
+import com.goorm.dapum.domain.careComment.repository.CareCommentRepository;
 import com.goorm.dapum.domain.carePost.dto.CarePostListResponse;
+import com.goorm.dapum.domain.carePost.entity.CarePost;
+import com.goorm.dapum.domain.carePost.repository.CarePostRepository;
+import com.goorm.dapum.domain.carePostLike.entity.CarePostLike;
+import com.goorm.dapum.domain.carePostLike.repository.CarePostLikeRepository;
 import com.goorm.dapum.domain.comment.repository.CommentRepository;
+import com.goorm.dapum.domain.coupon.repository.CouponRepository;
 import com.goorm.dapum.domain.member.dto.MemberRequest;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.entity.Neighborhood;
@@ -15,7 +21,6 @@ import com.goorm.dapum.domain.post.repository.PostRepository;
 import com.goorm.dapum.domain.postLike.dto.PostLikeList;
 import com.goorm.dapum.domain.postLike.entity.PostLike;
 import com.goorm.dapum.domain.postLike.repository.PostLikeRepository;
-import com.goorm.dapum.domain.userPoint.repository.UserPointRepository;
 import com.goorm.dapum.domain.userPoint.service.UserPointService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +50,15 @@ public class MemberService {
 
     @Autowired
     private UserPointService userPointService;
+
+    @Autowired
+    private CarePostRepository carePostRepository;
+
+    @Autowired
+    private CarePostLikeRepository carePostLikeRepository;
+
+    @Autowired
+    private final CareCommentRepository careCommentRepository;
 
     public void create(MemberRequest request) {
         Member member =new Member(request);
@@ -95,9 +109,9 @@ public class MemberService {
 
         for (PostLike postLike : postLikes) {
             Post post = postLike.getPost(); // 좋아요 된 게시물
-            Long likeCount = getLikeCount(post.getId());
-            Long commentCount = getCommentsCount(post.getId());
-            boolean liked = isLiked(post.getId());
+            Long likeCount = getLikeCount(post);
+            Long commentCount = getCommentsCount(post);
+            boolean liked = isLiked(member, post);
 
             PostLikeList response = new PostLikeList(
                     post.getId(),
@@ -119,25 +133,36 @@ public class MemberService {
         return responses;
     }
 
-    public long getCommentsCount(Long postId) {
-        Post post = postRepository.findById(postId).orElse(null);
+    public long getCommentsCount(Post post) {
         return commentRepository.countByPost(post);
     }
 
-    public long getLikeCount(Long postId) {
-        Post post = postRepository.findById(postId).orElse(null);
+    public long getLikeCount(Post post) {
         return postLikeRepository.countByPostAndStatus(post, true); // true: 좋아요 개수만 카운트
     }
 
-    public boolean isLiked(Long postId) {
-        Post post = postRepository.findById(postId).orElse(null);
-        Member member = findMember();
-
+    public boolean isLiked(Member member, Post post) {
         PostLike existingLike = postLikeRepository.findByPostAndMember(post, member)
                 .orElse(null);
 
         // 좋아요 상태가 true이면 true 반환, 아니면 false 반환
         return existingLike != null && existingLike.getStatus();
+    }
+
+    private boolean careIsLiked(Member member, CarePost carePost) {
+        CarePostLike existingLike = carePostLikeRepository.findByCarePostAndMember(carePost, member)
+                .orElse(null);
+
+        // 좋아요 상태가 true이면 true 반환, 아니면 false 반환
+        return existingLike != null && existingLike.getStatus();
+    }
+
+    private Long getCareCommentsCount(CarePost carePost) {
+        return careCommentRepository.countByCarePost(carePost);
+    }
+
+    private Long getCareLikeCount(CarePost carePost) {
+        return carePostLikeRepository.countByCarePostAndStatus(carePost, true); // true: 좋아요 개수만 카운트
     }
 
     public Member findById(Long receiverId) {
@@ -158,9 +183,9 @@ public class MemberService {
         List<PostListResponse> responses = new ArrayList<>();
 
         for (Post post : posts) {
-            Long likeCount = getLikeCount(post.getId());
-            Long commentCount = getCommentsCount(post.getId());
-            boolean liked = isLiked(post.getId());
+            Long likeCount = getLikeCount(post);
+            Long commentCount = getCommentsCount(post);
+            boolean liked = isLiked(member, post);
 
             PostListResponse response = new PostListResponse(
                     post.getId(),
@@ -188,8 +213,38 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-/*    public List<CarePostListResponse> getMyCares() {
+    // 사용자의 게시물 가져오기
+    public List<CarePostListResponse> getMyCares() {
+        // 현재 로그인한 사용자 조회
         Member member = findMember();
 
-    }*/
+        // 사용자가 작성한 게시물만 조회
+        List<CarePost> carePosts = carePostRepository.findByMemberId(member.getId());
+        List<CarePostListResponse> responses = new ArrayList<>();
+
+        for (CarePost carePost : carePosts) {
+            Long likeCount = getCareLikeCount(carePost);
+            Long commentCount = getCareCommentsCount(carePost);
+            boolean liked = careIsLiked(member, carePost);
+            CarePostListResponse response = new CarePostListResponse(
+                    carePost.getId(),
+                    carePost.getMember().getId(),
+                    carePost.getMember().getNickname(),
+                    carePost.getMember().getProfileImageUrl(),
+                    carePost.getTitle(),
+                    carePost.getCareDate(),
+                    carePost.getContent(),
+                    carePost.getImageUrls(),
+                    carePost.getTags(),
+                    carePost.getUpdatedAt(),
+                    likeCount,
+                    commentCount,
+                    liked
+            );
+            responses.add(response);
+        }
+
+        return responses;
+    }
+
 }

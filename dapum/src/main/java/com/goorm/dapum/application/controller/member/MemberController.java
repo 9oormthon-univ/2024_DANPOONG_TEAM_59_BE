@@ -50,12 +50,11 @@ public class MemberController {
         return ResponseEntity.ok(myPosts); // HTTP 200 상태와 게시물 목록 반환
     }
 
-/*    @GetMapping("/care")
+    @GetMapping("/care")
     @Operation(summary = "돌봄 목록 가져오기")
     public ResponseEntity<List<CarePostListResponse>> getMyCarePosts() {
         List<CarePostListResponse> myCares = memberService.getMyCares();
         return ResponseEntity.ok().body(myCares);
-    }*/
-
+    }
 
 }
