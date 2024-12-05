@@ -213,7 +213,7 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    // 사용자의 게시물 가져오기
+    // 사용자의 돌봄을 제공한 게시물 가져오기
     public List<CarePostListResponse> getMyCares() {
         // 현재 로그인한 사용자 조회
         Member member = findMember();
@@ -235,7 +235,8 @@ public class MemberService {
                     carePost.getCareDate(),
                     carePost.getContent(),
                     carePost.getImageUrls(),
-                    carePost.getTags(),
+                    carePost.getTag().getDisplayName(),  // Ensure the tag is displayed as a name
+                    carePost.isEmergency(),
                     carePost.getUpdatedAt(),
                     likeCount,
                     commentCount,

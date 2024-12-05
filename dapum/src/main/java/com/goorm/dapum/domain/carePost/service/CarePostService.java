@@ -84,9 +84,6 @@ public class CarePostService {
             Long commentCount = careCommentService.getCommentsCount(carePost.getId());
             boolean liked = carePostLikeService.isLiked(carePost.getId());
 
-            // Null check for updatedAt (in case it's null)
-            LocalDateTime updatedAt = carePost.getUpdatedAt() != null ? carePost.getUpdatedAt() : LocalDateTime.now();
-
             CarePostListResponse response = new CarePostListResponse(
                     carePost.getId(),
                     carePost.getMember().getId(),
@@ -98,7 +95,7 @@ public class CarePostService {
                     carePost.getImageUrls(),
                     carePost.getTag().getDisplayName(),  // Ensure the tag is displayed as a name
                     carePost.isEmergency(),
-                    updatedAt,
+                    carePost.getUpdatedAt(),
                     likeCount,
                     commentCount,
                     liked
