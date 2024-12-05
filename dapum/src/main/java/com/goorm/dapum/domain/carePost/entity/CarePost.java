@@ -4,6 +4,7 @@ import com.goorm.dapum.core.base.BaseEntity;
 import com.goorm.dapum.domain.careComment.entity.CareComment;
 import com.goorm.dapum.domain.carePostLike.entity.CarePostLike;
 import com.goorm.dapum.domain.member.entity.Member;
+import com.goorm.dapum.domain.chatroom.entity.ChatRoom;
 import jakarta.persistence.*;
 import com.goorm.dapum.domain.carePost.dto.CarePostRequest;
 import lombok.*;
@@ -60,6 +61,10 @@ public class CarePost extends BaseEntity {
 
     @Column(nullable = false)
     private LocalTime endTime;  // 돌봄 끝나는 시간
+
+    // 게시글과 관련된 채팅방들
+    @OneToMany(mappedBy = "carePost")
+    private List<ChatRoom> chatRooms = new ArrayList<>(); // 여러 채팅방이 연결될 수 있음
 
     // 생성자: DTO를 사용하여 엔티티 생성
     public CarePost(Member member, CarePostRequest request) {

@@ -2,6 +2,7 @@ package com.goorm.dapum.domain.chatroom.entity;
 
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.message.entity.Message;
+import com.goorm.dapum.domain.carePost.entity.CarePost;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,10 @@ public class ChatRoom {
     @JoinColumn(name = "member2_id", nullable = false)
     private Member member2;  // 참여자 2
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "care_post_id", nullable = false)
+    private CarePost carePost;  // 해당 채팅방이 속한 CarePost
+
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();  // 해당 채팅방의 메시지들
 
@@ -38,4 +43,3 @@ public class ChatRoom {
         this.createdAt = LocalDateTime.now();
     }
 }
-
