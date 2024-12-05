@@ -2,6 +2,7 @@ package com.goorm.dapum.application.controller.chatRoom;
 
 import com.goorm.dapum.domain.chatroom.dto.ChatRoomList;
 import com.goorm.dapum.domain.chatroom.dto.ChatRoomResponse;
+import com.goorm.dapum.domain.chatroom.dto.Id;
 import com.goorm.dapum.domain.chatroom.service.ChatRoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +20,10 @@ public class ChatRoomController {
     @Autowired
     private final ChatRoomService chatRoomService;
 
-    @PostMapping("/{member2Id}")
+    @PostMapping("")
     @Operation(summary = "채팅 불러오기 (없으면 생성)")
-    public ResponseEntity<ChatRoomResponse> findOrCreateChatRoom(@PathVariable Long member2Id) {
-        ChatRoomResponse chatRoomResponse = chatRoomService.findOrCreateChatRoom(member2Id);
+    public ResponseEntity<ChatRoomResponse> findOrCreateChatRoom(@RequestBody Id id) {
+        ChatRoomResponse chatRoomResponse = chatRoomService.findOrCreateChatRoom(id);
         return ResponseEntity.ok(chatRoomResponse);
     }
 

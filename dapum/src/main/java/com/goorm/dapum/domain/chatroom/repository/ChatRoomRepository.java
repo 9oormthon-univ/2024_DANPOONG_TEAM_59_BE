@@ -17,4 +17,7 @@ public interface ChatRoomRepository extends CrudRepository<ChatRoom, Long> {
     @Query("SELECT c FROM ChatRoom c WHERE c.member1 = :member OR c.member2 = :member")
     List<ChatRoom> findByMember(@Param("member") Member member);
 
+    Optional<ChatRoom> findByCarePostId(Long carePostId);
+
+    Optional<ChatRoom> findByPostId(Long postId);
 }
