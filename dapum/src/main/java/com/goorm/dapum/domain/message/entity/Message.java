@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -32,6 +34,11 @@ public class Message {
 
     @Column(nullable = false)
     private String content;  // 메시지 내용
+
+    @ElementCollection
+    @CollectionTable(name = "message_image_urls", joinColumns = @JoinColumn(name = "message_id"))
+    @Column(name = "image_url", length = 2083)
+    private List<String> imageUrls = new ArrayList<>();  // 게시글 이미지 URL 목록
 
     @Column(nullable = false)
     private boolean isRead = false;  // 읽음 여부 (기본값 false)
