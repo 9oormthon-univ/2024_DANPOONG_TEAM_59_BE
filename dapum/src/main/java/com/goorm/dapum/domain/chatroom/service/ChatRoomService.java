@@ -9,6 +9,7 @@ import com.goorm.dapum.domain.member.service.MemberService;
 import com.goorm.dapum.domain.message.dto.MessageResponse;
 import com.goorm.dapum.domain.message.entity.Message;
 import com.goorm.dapum.domain.message.repository.MessageRepository;
+import com.goorm.dapum.domain.message.service.MessageService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class ChatRoomService {
     private final MemberService memberService;
     @Autowired
     private final MessageRepository messageRepository;
+    @Autowired
+    private final MessageService messageService;
 
     // 채팅방 생성 기존에 있으면 가져오기
     public ChatRoomResponse findOrCreateChatRoom(Long meber2Id) {
@@ -41,6 +44,7 @@ public class ChatRoomService {
                 });
 
         // 메시지 내용 가져오기
+        messageService.markMessagesAsRead(chatRoom.getId(), member2);
         List<Message> messages = messageRepository.findByChatRoomIdOrderByCreatedAtAsc(chatRoom.getId());
 
         // ChatRoomResponse에 채팅방 정보와 메시지 내용 포함
