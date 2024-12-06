@@ -73,9 +73,6 @@ public class MemberService {
     public void updateNickname(Nickname nickname) {
         Member member = findMember();
         member.updateNickname(nickname);
-        System.out.println("사용자 이름 " + member.getKakaoName());
-        System.out.println("사용자 닉네임 " + member.getNickname());
-        System.out.println("입력한 닉네임 " + nickname.nickname());
         memberRepository.save(member);
     }
 
