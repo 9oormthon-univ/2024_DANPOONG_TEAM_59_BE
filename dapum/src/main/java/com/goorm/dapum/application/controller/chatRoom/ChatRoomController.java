@@ -47,6 +47,17 @@ public class ChatRoomController {
             return ResponseEntity.badRequest().body(null); // 잘못된 요청
         }
     }
+
+    @GetMapping("/{chatRoomId}")
+    @Operation(summary = "특정 채팅방 정보 가져오기")
+    public ResponseEntity<ChatRoomResponse> getChatRoom(@PathVariable Long chatRoomId) {
+        try {
+            ChatRoomResponse chatRoomResponse = chatRoomService.getChatRoom(chatRoomId);
+            return ResponseEntity.ok(chatRoomResponse);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null); // 잘못된 요청
+        }
+    }
 }
 
 
