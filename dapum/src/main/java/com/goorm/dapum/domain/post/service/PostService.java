@@ -2,6 +2,7 @@ package com.goorm.dapum.domain.post.service;
 
 import com.goorm.dapum.domain.PostReport.dto.PostReportRequest;
 import com.goorm.dapum.domain.PostReport.entity.PostReport;
+import com.goorm.dapum.domain.PostReport.entity.ReportState;
 import com.goorm.dapum.domain.PostReport.repository.PostReportRepository;
 import com.goorm.dapum.domain.comment.dto.CommentResponse;
 import com.goorm.dapum.domain.comment.service.CommentService;
@@ -164,6 +165,7 @@ public class PostService {
                 .post(post)
                 .member(member)
                 .reason(request.reason())
+                .state(ReportState.PENDING)
                 .build();
         postReportRepository.save(report);
     }
