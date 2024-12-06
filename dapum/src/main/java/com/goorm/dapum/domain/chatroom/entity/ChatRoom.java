@@ -5,6 +5,7 @@ import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.message.entity.Message;
 import com.goorm.dapum.domain.carePost.entity.CarePost;
 import com.goorm.dapum.domain.post.entity.Post;
+import com.goorm.dapum.domain.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,6 +45,9 @@ public class ChatRoom extends BaseEntity {
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();  // 해당 채팅방의 메시지들
 
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TradeState tradeState = TradeState.DISCUSSION; // 거래 여부 (거래아님, 예약, 거래완료)
@@ -55,15 +59,15 @@ public class ChatRoom extends BaseEntity {
     private boolean member2ReviewCompleted = false; // 후기 작성 여부
 
 
+    public ChatRoom() {
+
+    }
+
     // 생성자
     public ChatRoom(Member member1, Member member2, ChatRoomTag chatRoomTag) {
         this.member1 = member1;
         this.member2 = member2;
         this.chatRoomTag = chatRoomTag;
-    }
-
-    public ChatRoom() {
-
     }
 
     // CarePost 기반 채팅방 생성
@@ -88,11 +92,13 @@ public class ChatRoom extends BaseEntity {
     }
 
     // 후기 작성 완료 설정
-    public void completeMember1Review() {
-        this.member1ReviewCompleted = true;
-    }
-
-    public void completeMember2Review() {
-        this.member2ReviewCompleted = true;
+    public void completeReviewForMember(Member member) {
+        if (this.member1.equals(member)) {
+            this.member1ReviewCompleted = true;
+        } else if (this.member2.equals(member)) {
+            this.member2ReviewCompleted = true;
+        } else {
+            throw new IllegalArgumentException("이 사용자는 이 채팅방의 참여자가 아닙니다.");
+        }
     }
 }
