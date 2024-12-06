@@ -2,6 +2,7 @@ package com.goorm.dapum.domain.admin.service;
 
 import com.goorm.dapum.domain.PostReport.entity.PostReport;
 import com.goorm.dapum.domain.PostReport.repository.PostReportRepository;
+import com.goorm.dapum.domain.admin.dto.CareReportList;
 import com.goorm.dapum.domain.admin.dto.CareReportRequest;
 import com.goorm.dapum.domain.admin.dto.PostReportList;
 import com.goorm.dapum.domain.admin.dto.PostReportRequest;
@@ -63,11 +64,33 @@ public class AdminService {
     }
 
     // 돌봄 게시글 신고 목록 가져오기
-    public List<CarePostListResponse> getCarePostReportList() {
+    public List<CareReportList> getCarePostReportList() {
         return careReportRepository.findAll().stream()
-                .map(report -> carePostService.createCarePostListResponse(report.getCarePost()))
+                .map(report -> {
+                    // CareReport -> CarePostListResponse 변환
+                    var carePostResponse = carePostService.createCarePostListResponse(report.getCarePost());
+                    // CareReportList 생성
+                    return new CareReportList(
+                            report.getId(),                          // 신고 ID
+                            carePostResponse.carePostId(),            // 돌봄 게시글 ID
+                            carePostResponse.memberId(),              // 회원 ID
+                            carePostResponse.nickname(),              // 닉네임
+                            carePostResponse.kakaoProfileImageUrl(),  // 카카오 프로필 이미지
+                            carePostResponse.title(),                 // 돌봄 게시글 제목
+                            carePostResponse.careDate(),              // 돌봄 날짜
+                            carePostResponse.content(),               // 돌봄 게시글 내용
+                            carePostResponse.imageUrls(),             // 돌봄 게시글 이미지
+                            carePostResponse.tag(),                   // 돌봄 게시글 태그
+                            carePostResponse.isEmergency(),           // 긴급 여부
+                            carePostResponse.updatedAt(),             // 게시글 업데이트 시간
+                            carePostResponse.likeCount(),             // 좋아요 수
+                            carePostResponse.commentCount(),          // 댓글 수
+                            carePostResponse.isLiked()                // 좋아요 여부
+                    );
+                })
                 .collect(Collectors.toList());
     }
+
 
     // 게시글 신고 처리하기
     public void processPostReports(PostReportRequest request) throws BadRequestException {
