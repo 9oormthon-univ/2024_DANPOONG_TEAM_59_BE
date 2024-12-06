@@ -8,7 +8,7 @@ import com.goorm.dapum.domain.chatroom.dto.ChatRoomResponse;
 import com.goorm.dapum.domain.chatroom.entity.ChatRoom;
 import com.goorm.dapum.domain.chatroom.entity.ChatRoomTag;
 import com.goorm.dapum.domain.chatroom.entity.TradeState;
-import com.goorm.dapum.domain.chatroom.entity.TradeStateRequest;
+import com.goorm.dapum.domain.chatroom.dto.TradeStateRequest;
 import com.goorm.dapum.domain.chatroom.repository.ChatRoomRepository;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.service.MemberService;

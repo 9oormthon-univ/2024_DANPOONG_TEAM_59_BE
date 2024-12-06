@@ -1,4 +1,4 @@
-package com.goorm.dapum.domain.chatroom.entity;
+package com.goorm.dapum.domain.chatroom.dto;
 
 public record TradeStateRequest(
         Long chatRoomId,

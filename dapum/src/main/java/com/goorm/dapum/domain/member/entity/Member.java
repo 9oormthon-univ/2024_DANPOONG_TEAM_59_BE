@@ -25,11 +25,14 @@ public class Member extends BaseEntity {
     private String email;
     private String nickname;
     private String profileImageUrl;
+
     @Embedded
     private Neighborhood neighborhood;
+
+    @Enumerated(EnumType.STRING)
     private Status status;
-    private Double temperature = 36.5;
-    private int points = 100; // 포인트 필드 추가, 기본값 100
+    private Double temperature;
+    private int points; // 포인트 필드 추가, 기본값 100
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CarePost> carePosts = new ArrayList<>();
@@ -56,6 +59,8 @@ public class Member extends BaseEntity {
         this.profileImageUrl = request.profileImageUrl();
         this.email = request.email();
         this.status = Status.ACTIVE;
+        this.temperature = 36.5;
+        this.points = 100;
     }
 
     public void updateNickname(Nickname nickname) {
