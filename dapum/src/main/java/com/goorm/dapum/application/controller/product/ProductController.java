@@ -1,6 +1,7 @@
 package com.goorm.dapum.application.controller.product;
 
 import com.goorm.dapum.domain.Product.dto.ProductRequest;
+import com.goorm.dapum.domain.Product.dto.QuantityRequest;
 import com.goorm.dapum.domain.Product.entity.Product;
 import com.goorm.dapum.domain.Product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,6 +50,13 @@ public class ProductController {
     @Operation(summary = "상품 삭제")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
         productService.deleteProduct(productId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("")
+    @Operation(summary = "수량 추가")
+    public ResponseEntity<Void> updateProductQuantity(@RequestBody QuantityRequest request) {
+        productService.addProuctQuantity(request);
         return ResponseEntity.ok().build();
     }
 }
