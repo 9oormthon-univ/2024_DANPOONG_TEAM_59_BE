@@ -13,6 +13,7 @@ import com.goorm.dapum.domain.chatroom.entity.TradeState;
 import com.goorm.dapum.domain.chatroom.repository.ChatRoomRepository;
 import com.goorm.dapum.domain.comment.repository.CommentRepository;
 import com.goorm.dapum.domain.member.dto.MemberRequest;
+import com.goorm.dapum.domain.member.dto.MemberResponse;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.entity.Neighborhood;
 import com.goorm.dapum.domain.member.entity.Status;
@@ -291,6 +292,21 @@ public class MemberService {
             }
         }
         return responses;
+    }
+
+    public MemberResponse getMemberInfo(){
+        Member member = findMember();
+        return new MemberResponse(
+                member.getId(),
+                member.getKakaoName(),
+                member.getNickname(),
+                member.getProfileImageUrl(),
+                member.getPoints(),
+                member.getTemperature(),
+                member.getNeighborhood().getProvince(),
+                member.getNeighborhood().getCity(),
+                member.getNeighborhood().getDistrict()
+                );
     }
 
 }

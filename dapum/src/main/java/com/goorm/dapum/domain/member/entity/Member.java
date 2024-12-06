@@ -70,8 +70,12 @@ public class Member extends BaseEntity {
         this.neighborhood = neighborhood;
     }
 
-    public void updateTemperature(Double temperature) {
-        this.temperature = temperature;
+    public void addTemperature(Double temperature) {
+        this.temperature += temperature;
+    }
+
+    public void deductTemperature(Double temperature) {
+        this.temperature -= temperature;
     }
 
     // 포인트 증가 메서드
