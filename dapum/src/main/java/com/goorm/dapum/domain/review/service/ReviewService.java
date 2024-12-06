@@ -16,10 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -49,6 +45,7 @@ public class ReviewService {
                 .content(request.content())
                 .build();
 
+        changeTemperature(to, request.rating());
         reviewRepository.save(review);
     }
 
@@ -104,6 +101,21 @@ public class ReviewService {
         }
 
         return responseBuilder.build();
+    }
+
+    private void changeTemperature(Member member, int rating){
+        if(rating == 5){
+            member.addTemperature(1.0);
+        }
+        else if(rating == 4){
+            member.addTemperature(0.5);
+        }
+        else if(rating == 2){
+            member.deductTemperature(0.5);
+        }
+        else if(rating == 1){
+            member.deductTemperature(1.0);
+        }
     }
 
 }
