@@ -84,14 +84,17 @@ public class CarePostService {
 
     // 모든 게시물 가져오기
     public List<CarePostListResponse> getAllCarePosts() {
-        List<CarePost> carePosts = carePostRepository.findAll();
+        Member currentMember = memberService.findMember();
+        String userCity = currentMember.getNeighborhood().getCity();
+
+        // 동일한 city의 게시물만 가져오기
+        List<CarePost> carePosts = carePostRepository.findByCity(userCity);
         List<CarePostListResponse> responses = new ArrayList<>();
 
         for (CarePost carePost : carePosts) {
             CarePostListResponse response = createCarePostListResponse(carePost);
             responses.add(response);
         }
-
         return responses;
     }
 
