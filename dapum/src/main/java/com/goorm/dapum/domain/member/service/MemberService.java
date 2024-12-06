@@ -23,7 +23,6 @@ import com.goorm.dapum.domain.post.repository.PostRepository;
 import com.goorm.dapum.domain.postLike.dto.PostLikeList;
 import com.goorm.dapum.domain.postLike.entity.PostLike;
 import com.goorm.dapum.domain.postLike.repository.PostLikeRepository;
-import com.goorm.dapum.domain.userPoint.service.UserPointService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +50,6 @@ public class MemberService {
     private PostRepository postRepository;
 
     @Autowired
-    private UserPointService userPointService;
-
-    @Autowired
     private CarePostRepository carePostRepository;
 
     @Autowired
@@ -66,8 +62,7 @@ public class MemberService {
     private final ChatRoomRepository chatRoomRepository;
 
     public void create(MemberRequest request) {
-        Member member =new Member(request);
-        userPointService.createInitialPoint(member);
+        Member member = new Member(request);
         memberRepository.save(member);
     }
 

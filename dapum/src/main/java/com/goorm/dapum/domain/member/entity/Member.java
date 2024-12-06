@@ -28,9 +28,8 @@ public class Member extends BaseEntity {
     @Embedded
     private Neighborhood neighborhood;
     private Status status;
-
-    // 온도 필드 추가, 기본값 36.5도로 설정
     private Double temperature = 36.5;
+    private int points = 100; // 포인트 필드 추가, 기본값 100
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CarePost> carePosts = new ArrayList<>();
@@ -73,5 +72,18 @@ public class Member extends BaseEntity {
 
     public void updateTemperature(Double temperature) {
         this.temperature = temperature;
+    }
+
+    // 포인트 증가 메서드
+    public void addPoints(int points) {
+        this.points += points;
+    }
+
+    // 포인트 차감 메서드
+    public void deductPoints(int points) {
+        if (this.points < points) {
+            throw new IllegalStateException("포인트가 부족합니다.");
+        }
+        this.points -= points;
     }
 }

@@ -7,7 +7,6 @@ import com.goorm.dapum.domain.coupon.entity.Coupon;
 import com.goorm.dapum.domain.coupon.repository.CouponRepository;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.service.MemberService;
-import com.goorm.dapum.domain.userPoint.service.UserPointService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +27,6 @@ public class CouponService {
     @Autowired
     private final MemberService memberService;
 
-    @Autowired
-    private final UserPointService userPointService;
-
     // 상품 구매 후 쿠폰 생성
     public Coupon purchaseProduct(Long productId) {
         Member member = memberService.findMember();
@@ -38,7 +34,7 @@ public class CouponService {
                 .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
 
         // 포인트 확인 및 차감
-        userPointService.deductPoints(member, product.getPointCost());
+        member.deductPoints(product.getPointCost());
 
         // 쿠폰 생성
         Coupon coupon = Coupon.builder()
@@ -66,7 +62,6 @@ public class CouponService {
                 ))
                 .toList();
     }
-
 
     // 특정 쿠폰 확인
     public CouponList getCoupon(Long couponId) {
