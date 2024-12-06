@@ -132,6 +132,20 @@ public class ChatRoomService {
             CarePost carePost = chatRoom.getCarePost();
             if (carePost.getMember().equals(currentUser)) {
                 chatRoom.changeTradeState(newTradeState);
+
+                if (newTradeState.equals(TradeState.TRADE_COMPLETED)) {
+                    // 돌봄 시간 계산
+                    int timeInMinutes = (carePost.getEndTime().getHour() * 60 + carePost.getEndTime().getMinute())
+                            - (carePost.getStartTime().getHour() * 60 + carePost.getStartTime().getMinute());
+
+                    // 1시간 당 5포인트
+                    int points = (timeInMinutes / 60) * 5;
+
+                    // 포인트 차감 및 증가
+                    currentUser.deductPoints(points);
+                    Member otherUser = (carePost.getMember().equals(currentUser)) ? chatRoom.getMember1() : chatRoom.getMember2();
+                    otherUser.addPoints(points);
+                }
             } else {
                 throw new IllegalAccessException("게시글 작성자만 거래 상태를 변경할 수 있습니다.");
             }
@@ -139,4 +153,5 @@ public class ChatRoomService {
             throw new IllegalArgumentException("유효하지 않은 ChatRoomTag입니다.");
         }
     }
+
 }

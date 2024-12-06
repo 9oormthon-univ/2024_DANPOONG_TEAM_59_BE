@@ -10,6 +10,7 @@ import com.goorm.dapum.domain.carePost.dto.CarePostListResponse;
 import com.goorm.dapum.domain.carePost.service.CarePostService;
 import com.goorm.dapum.domain.carePostReport.entity.CareReport;
 import com.goorm.dapum.domain.carePostReport.repository.CareReportRepository;
+import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.post.dto.PostListResponse;
 import com.goorm.dapum.domain.post.service.PostService;
 import jakarta.transaction.Transactional;
@@ -102,6 +103,8 @@ public class AdminService {
         if (request.state().equals("신고처리")) {
             // 게시글 삭제
             postService.DeletePost(report.getPost().getId());
+            Member member = report.getPost().getMember();
+            member.deductTemperature(1.0);
         }
         // 신고 상태가 '신고반려'일 경우 해당 게시글을 신고한 모든 신고를 삭제
         else if (request.state().equals("신고반려")) {
@@ -119,6 +122,8 @@ public class AdminService {
 
         if(request.state().equals("신고처리")){
             carePostService.deleteCarePost(report.getCarePost().getId());
+            Member member = report.getCarePost().getMember();
+            member.deductTemperature(1.0);
         }
         else if (request.state().equals("신고반려")) {
             // 해당 게시글을 신고한 모든 신고 삭제
