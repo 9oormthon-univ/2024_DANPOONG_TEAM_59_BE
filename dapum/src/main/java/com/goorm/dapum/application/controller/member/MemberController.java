@@ -3,6 +3,7 @@ package com.goorm.dapum.application.controller.member;
 import com.goorm.dapum.application.dto.member.NeighborhoodRequest;
 import com.goorm.dapum.application.dto.member.Nickname;
 import com.goorm.dapum.domain.carePost.dto.CarePostListResponse;
+import com.goorm.dapum.domain.member.dto.MemberResponse;
 import com.goorm.dapum.domain.member.service.MemberService;
 import com.goorm.dapum.domain.post.dto.PostListResponse;
 import com.goorm.dapum.domain.postLike.dto.PostLikeList;
@@ -51,10 +52,23 @@ public class MemberController {
     }
 
     @GetMapping("/care")
-    @Operation(summary = "돌봄 목록 가져오기")
+    @Operation(summary = "내가 작성한 돌봄 목록 가져오기")
     public ResponseEntity<List<CarePostListResponse>> getMyCarePosts() {
         List<CarePostListResponse> myCares = memberService.getMyCares();
         return ResponseEntity.ok().body(myCares);
     }
 
+    @GetMapping("/takeCare")
+    @Operation(summary = "내가 돌봐준 돌봄 목록 불러오기")
+    public ResponseEntity<List<CarePostListResponse>> getMyTakeCarePosts() {
+        List<CarePostListResponse> myCares = memberService.getMyTakeCares();
+        return ResponseEntity.ok().body(myCares);
+    }
+
+    @GetMapping("/Info")
+    @Operation(summary = "사용자 정보 가져오기")
+    public ResponseEntity<MemberResponse> getMemberInfo() {
+        MemberResponse memberInfo = memberService.getMemberInfo();
+        return ResponseEntity.ok(memberInfo);
+    }
 }

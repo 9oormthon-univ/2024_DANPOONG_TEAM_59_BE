@@ -7,8 +7,6 @@ import com.goorm.dapum.domain.member.dto.MemberRequest;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.entity.Status;
 import com.goorm.dapum.domain.member.service.MemberService;
-import com.goorm.dapum.domain.userPoint.entity.UserPoint;
-import com.goorm.dapum.domain.userPoint.service.UserPointService;
 import com.goorm.dapum.infrastructure.jwt.JwtService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +23,6 @@ public class KakaoAuthService {
     @Autowired
     private final MemberService memberService;
 
-    @Autowired
-    private final UserPointService userPointService;
 
     public KakaoLoginResponse login(KakaoLoginRequest request) {
         if(!memberService.existsByEmail(request.email())){

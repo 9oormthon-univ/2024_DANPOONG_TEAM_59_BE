@@ -8,8 +8,12 @@ import com.goorm.dapum.domain.carePost.entity.CarePost;
 import com.goorm.dapum.domain.carePost.repository.CarePostRepository;
 import com.goorm.dapum.domain.carePostLike.entity.CarePostLike;
 import com.goorm.dapum.domain.carePostLike.repository.CarePostLikeRepository;
+import com.goorm.dapum.domain.chatroom.entity.ChatRoom;
+import com.goorm.dapum.domain.chatroom.entity.TradeState;
+import com.goorm.dapum.domain.chatroom.repository.ChatRoomRepository;
 import com.goorm.dapum.domain.comment.repository.CommentRepository;
 import com.goorm.dapum.domain.member.dto.MemberRequest;
+import com.goorm.dapum.domain.member.dto.MemberResponse;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.entity.Neighborhood;
 import com.goorm.dapum.domain.member.entity.Status;
@@ -20,7 +24,6 @@ import com.goorm.dapum.domain.post.repository.PostRepository;
 import com.goorm.dapum.domain.postLike.dto.PostLikeList;
 import com.goorm.dapum.domain.postLike.entity.PostLike;
 import com.goorm.dapum.domain.postLike.repository.PostLikeRepository;
-import com.goorm.dapum.domain.userPoint.service.UserPointService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +51,6 @@ public class MemberService {
     private PostRepository postRepository;
 
     @Autowired
-    private UserPointService userPointService;
-
-    @Autowired
     private CarePostRepository carePostRepository;
 
     @Autowired
@@ -59,9 +59,11 @@ public class MemberService {
     @Autowired
     private final CareCommentRepository careCommentRepository;
 
+    @Autowired
+    private final ChatRoomRepository chatRoomRepository;
+
     public void create(MemberRequest request) {
-        Member member =new Member(request);
-        userPointService.createInitialPoint(member);
+        Member member = new Member(request);
         memberRepository.save(member);
     }
 
@@ -72,9 +74,6 @@ public class MemberService {
     public void updateNickname(Nickname nickname) {
         Member member = findMember();
         member.updateNickname(nickname);
-        System.out.println("사용자 이름 " + member.getKakaoName());
-        System.out.println("사용자 닉네임 " + member.getNickname());
-        System.out.println("입력한 닉네임 " + nickname.nickname());
         memberRepository.save(member);
     }
 
@@ -91,10 +90,6 @@ public class MemberService {
         Neighborhood neighborhood = new Neighborhood(neighborhoodRequest);
         member.updateNeighborhood(neighborhood);
         memberRepository.save(member);
-        System.out.println("사용자 이름 " + member.getKakaoName());
-        System.out.println("시/도 " + member.getNeighborhood().getProvince());
-        System.out.println("구/군 " + member.getNeighborhood().getCity());
-        System.out.println("읍/면/동 " + member.getNeighborhood().getDistrict());
     }
 
     public List<PostLikeList> getPostLikeList() {
@@ -255,6 +250,63 @@ public class MemberService {
         }
 
         return responses;
+    }
+
+    // 내가 돌봐준 게시글 목록
+    public List<CarePostListResponse> getMyTakeCares() {
+        // 현재 로그인된 사용자
+        Member currentUser = findMember();
+
+        // 거래 완료된 ChatRoom 가져오기
+        List<ChatRoom> completedChatRooms = chatRoomRepository.findByTradeStateAndMember(TradeState.TRADE_COMPLETED, currentUser);
+
+        // 돌봄 제공한 게시글 목록 생성
+        List<CarePostListResponse> responses = new ArrayList<>();
+
+        for (ChatRoom chatRoom : completedChatRooms) {
+            CarePost carePost = chatRoom.getCarePost();
+
+            // CarePost가 존재하고, 현재 사용자가 작성자가 아닐 경우
+            if (carePost != null && !carePost.getMember().equals(currentUser)) {
+                Long likeCount = getCareLikeCount(carePost);
+                Long commentCount = getCareCommentsCount(carePost);
+                boolean liked = careIsLiked(currentUser, carePost);
+
+                CarePostListResponse response = new CarePostListResponse(
+                        carePost.getId(),
+                        carePost.getMember().getId(),
+                        carePost.getMember().getNickname(),
+                        carePost.getMember().getProfileImageUrl(),
+                        carePost.getTitle(),
+                        carePost.getCareDate(),
+                        carePost.getContent(),
+                        carePost.getImageUrls(),
+                        carePost.getCarePostTag().getDisplayName(),  // Ensure the tag is displayed as a name
+                        carePost.isEmergency(),
+                        carePost.getUpdatedAt(),
+                        likeCount,
+                        commentCount,
+                        liked
+                );
+                responses.add(response);
+            }
+        }
+        return responses;
+    }
+
+    public MemberResponse getMemberInfo(){
+        Member member = findMember();
+        return new MemberResponse(
+                member.getId(),
+                member.getKakaoName(),
+                member.getNickname(),
+                member.getProfileImageUrl(),
+                member.getPoints(),
+                member.getTemperature(),
+                member.getNeighborhood().getProvince(),
+                member.getNeighborhood().getCity(),
+                member.getNeighborhood().getDistrict()
+                );
     }
 
 }

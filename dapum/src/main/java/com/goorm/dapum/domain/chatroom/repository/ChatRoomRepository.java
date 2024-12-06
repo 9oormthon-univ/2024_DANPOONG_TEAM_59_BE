@@ -1,6 +1,7 @@
 package com.goorm.dapum.domain.chatroom.repository;
 
 import com.goorm.dapum.domain.chatroom.entity.ChatRoom;
+import com.goorm.dapum.domain.chatroom.entity.TradeState;
 import com.goorm.dapum.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -20,4 +21,8 @@ public interface ChatRoomRepository extends CrudRepository<ChatRoom, Long> {
     Optional<ChatRoom> findByCarePostId(Long carePostId);
 
     Optional<ChatRoom> findByPostId(Long postId);
+
+    @Query("SELECT c FROM ChatRoom c WHERE c.tradeState = :tradeState AND (c.member1 = :member OR c.member2 = :member)")
+    List<ChatRoom> findByTradeStateAndMember(@Param("tradeState") TradeState tradeState, @Param("member") Member member);
+
 }
