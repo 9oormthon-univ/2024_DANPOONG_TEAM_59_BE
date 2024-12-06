@@ -53,13 +53,18 @@ public class PostService {
         List<CommentResponse> comments = commentService.getComments(post.getId());
         Long likeCount = postLikeService.getLikeCount(post.getId());
         boolean liked = postLikeService.isLiked(post.getId());
+        // PostTag를 List<String>으로 변환
+        List<String> tagNames = post.getPostTags().stream()
+                .map(tag -> tag.getDisplayName())
+                .toList();
         return new PostResponse(
                 post.getId(),
                 post.getMember().getId(),
                 post.getMember().getNickname(),
                 post.getMember().getProfileImageUrl(),
                 post.getTitle(), post.getContent(),
-                post.getImageUrls(), post.getPostTags(),
+                post.getImageUrls(),
+                tagNames,
                 post.getUpdatedAt(),
                 comments,
                 likeCount,
@@ -75,6 +80,11 @@ public class PostService {
             Long likeCount = postLikeService.getLikeCount(post.getId());
             Long commentCount = commentService.getCommentsCount(post.getId());
             boolean liked = postLikeService.isLiked(post.getId());
+            // PostTag를 List<String>으로 변환
+            List<String> tagNames = post.getPostTags().stream()
+                    .map(tag -> tag.getDisplayName())
+                    .toList();
+
             PostListResponse response = new PostListResponse(
                     post.getId(),
                     post.getMember().getId(),
@@ -83,7 +93,7 @@ public class PostService {
                     post.getTitle(),
                     post.getContent(),
                     post.getImageUrls(),
-                    post.getPostTags(),
+                    tagNames,
                     post.getUpdatedAt(),
                     likeCount,
                     commentCount,

@@ -9,7 +9,6 @@ import com.goorm.dapum.domain.carePost.repository.CarePostRepository;
 import com.goorm.dapum.domain.carePostLike.entity.CarePostLike;
 import com.goorm.dapum.domain.carePostLike.repository.CarePostLikeRepository;
 import com.goorm.dapum.domain.comment.repository.CommentRepository;
-import com.goorm.dapum.domain.coupon.repository.CouponRepository;
 import com.goorm.dapum.domain.member.dto.MemberRequest;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.entity.Neighborhood;
@@ -113,6 +112,11 @@ public class MemberService {
             Long commentCount = getCommentsCount(post);
             boolean liked = isLiked(member, post);
 
+            // PostTag를 List<String>으로 변환
+            List<String> tagNames = post.getPostTags().stream()
+                    .map(tag -> tag.getDisplayName())
+                    .toList();
+
             PostLikeList response = new PostLikeList(
                     post.getId(),
                     post.getMember().getId(),
@@ -120,7 +124,7 @@ public class MemberService {
                     post.getTitle(),
                     post.getContent(),
                     post.getImageUrls(),
-                    post.getTags(),
+                    tagNames,
                     post.getUpdatedAt(),
                     likeCount,
                     commentCount,
@@ -187,6 +191,11 @@ public class MemberService {
             Long commentCount = getCommentsCount(post);
             boolean liked = isLiked(member, post);
 
+            // PostTag를 List<String>으로 변환
+            List<String> tagNames = post.getPostTags().stream()
+                    .map(tag -> tag.getDisplayName())
+                    .toList();
+
             PostListResponse response = new PostListResponse(
                     post.getId(),
                     post.getMember().getId(),
@@ -195,7 +204,7 @@ public class MemberService {
                     post.getTitle(),
                     post.getContent(),
                     post.getImageUrls(),
-                    post.getTags(),
+                    tagNames,
                     post.getUpdatedAt(),
                     likeCount,
                     commentCount,
