@@ -29,6 +29,9 @@ public class Member extends BaseEntity {
     private Neighborhood neighborhood;
     private Status status;
 
+    // 온도 필드 추가, 기본값 36.5도로 설정
+    private Double temperature = 36.5;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CarePost> carePosts = new ArrayList<>();
 
@@ -45,7 +48,6 @@ public class Member extends BaseEntity {
     private List<Notification> notifications = new ArrayList<>();
 
     public Member() {
-
     }
 
     public Member(MemberRequest request) {
@@ -67,5 +69,9 @@ public class Member extends BaseEntity {
 
     public void updateNeighborhood(Neighborhood neighborhood) {
         this.neighborhood = neighborhood;
+    }
+
+    public void updateTemperature(Double temperature) {
+        this.temperature = temperature;
     }
 }
