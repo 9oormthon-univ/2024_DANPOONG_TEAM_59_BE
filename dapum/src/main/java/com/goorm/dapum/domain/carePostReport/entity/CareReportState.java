@@ -1,8 +1,8 @@
 package com.goorm.dapum.domain.carePostReport.entity;
 
 public enum CareReportState {
-    PENDING("신고"),  // 신고가 접수된 상태
-    PROCESSED("신고처리됨"), // 신고가 처리된 상태
+    PENDING("신고접수"),  // 신고가 접수된 상태
+    PROCESSED("신고처리"), // 신고가 처리된 상태
     REJECTED("신고반려");
 
     private final String description;
