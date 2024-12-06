@@ -1,6 +1,9 @@
 package com.goorm.dapum.domain.post.entity;
 
 import com.goorm.dapum.core.base.BaseEntity;
+import com.goorm.dapum.domain.PostReport.entity.PostReport;
+import com.goorm.dapum.domain.carePostReport.entity.CareReport;
+import com.goorm.dapum.domain.chatroom.entity.ChatRoom;
 import com.goorm.dapum.domain.comment.entity.Comment;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.post.dto.PostRequest;
@@ -50,6 +53,15 @@ public class Post extends BaseEntity {
     @Enumerated(EnumType.STRING) // Enum을 String 형태로 저장
     @Column(name = "tag")
     private List<PostTag> postTags = new ArrayList<>();  // 게시글 태그 목록 (Enum)
+
+    // 게시글과 관련된 채팅방들
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChatRoom> chatRooms = new ArrayList<>(); // 여러 채팅방이 연결될 수 있음
+
+    // 신고된 게시글들을 삭제할 수 있도록 CareReport와 관계 추가
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostReport> postReports = new ArrayList<>();  // 관련된 신고들
+
 
     public Post(Member member, PostRequest request) {
         this.member = member;
