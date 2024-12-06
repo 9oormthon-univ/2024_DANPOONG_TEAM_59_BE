@@ -1,4 +1,4 @@
-package com.goorm.dapum.domain.CarePostReport.entity;
+package com.goorm.dapum.domain.carePostReport.entity;
 
 import com.goorm.dapum.core.base.BaseEntity;
 import com.goorm.dapum.domain.carePost.entity.CarePost;

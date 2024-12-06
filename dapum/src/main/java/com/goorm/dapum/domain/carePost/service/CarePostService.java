@@ -1,9 +1,9 @@
 package com.goorm.dapum.domain.carePost.service;
 
-import com.goorm.dapum.domain.CarePostReport.dto.CareReportRequest;
-import com.goorm.dapum.domain.CarePostReport.entity.CareReport;
-import com.goorm.dapum.domain.CarePostReport.entity.CareReportState;
-import com.goorm.dapum.domain.CarePostReport.repository.CareReportRepository;
+import com.goorm.dapum.domain.carePostReport.dto.CareReportRequest;
+import com.goorm.dapum.domain.carePostReport.entity.CareReport;
+import com.goorm.dapum.domain.carePostReport.entity.CareReportState;
+import com.goorm.dapum.domain.carePostReport.repository.CareReportRepository;
 import com.goorm.dapum.domain.careComment.dto.CareCommentResponse;
 import com.goorm.dapum.domain.careComment.service.CareCommentService;
 import com.goorm.dapum.domain.carePost.dto.CarePostRequest;

@@ -1,7 +1,6 @@
 package com.goorm.dapum.application.controller.carePost;
 
-import com.goorm.dapum.domain.CarePostReport.dto.CareReportRequest;
-import com.goorm.dapum.domain.PostReport.dto.PostReportRequest;
+import com.goorm.dapum.domain.carePostReport.dto.CareReportRequest;
 import com.goorm.dapum.domain.carePost.dto.CarePostRequest;
 import com.goorm.dapum.domain.carePost.dto.CarePostResponse;
 import com.goorm.dapum.domain.carePost.dto.CarePostListResponse;

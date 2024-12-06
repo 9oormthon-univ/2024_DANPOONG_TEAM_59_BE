@@ -1,4 +1,4 @@
-package com.goorm.dapum.domain.CarePostReport.entity;
+package com.goorm.dapum.domain.carePostReport.entity;
 
 public enum CareReportState {
     PENDING("신고중"),  // 신고가 접수된 상태

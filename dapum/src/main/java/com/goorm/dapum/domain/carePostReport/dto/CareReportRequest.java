@@ -1,4 +1,4 @@
-package com.goorm.dapum.domain.CarePostReport.dto;
+package com.goorm.dapum.domain.carePostReport.dto;
 
 public record CareReportRequest(
         Long carePostId,  // carePostId로 수정
