@@ -45,23 +45,39 @@ public class Post extends BaseEntity {
     @Column(name = "image_url", length = 2083)
     private List<String> imageUrls = new ArrayList<>();  // 게시글 이미지 URL 목록
 
-    @ElementCollection // 값 타입 컬렉션 매핑
-    @CollectionTable(name = "post_keywords", joinColumns = @JoinColumn(name = "post_id"))
+    @ElementCollection(fetch = FetchType.LAZY) // 값 타입 컬렉션 매핑
+    @CollectionTable(name = "post_tags", joinColumns = @JoinColumn(name = "post_id"))
+    @Enumerated(EnumType.STRING) // Enum을 String 형태로 저장
     @Column(name = "tag")
-    private List<String> tags = new ArrayList<>();  // 게시글 키워드 목록
+    private List<PostTag> postTags = new ArrayList<>();  // 게시글 태그 목록 (Enum)
 
     public Post(Member member, PostRequest request) {
         this.member = member;
         this.title = request.title();
         this.content = request.content();
         this.imageUrls = request.imageUrls();
-        this.tags = request.tags();
+        this.postTags = convertStringsToTags(request.postTags()); // 요청에서 받아온 태그 설정
     }
 
     public void update(PostRequest request) {
         this.title = request.title();
         this.content = request.content();
         this.imageUrls = request.imageUrls();
-        this.tags = request.tags();
+        this.postTags = convertStringsToTags(request.postTags());  // 태그 업데이트
+    }
+
+    private List<PostTag> convertStringsToTags(List<String> tagStrings) {
+        if (tagStrings == null || tagStrings.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<PostTag> postTags = new ArrayList<>();
+        for (String tagString : tagStrings) {
+            try {
+                postTags.add(PostTag.fromDisplayName(tagString));
+            } catch (IllegalArgumentException e) {
+                // 처리하지 못하는 태그는 로그를 남기거나 무시
+            }
+        }
+        return postTags;
     }
 }
