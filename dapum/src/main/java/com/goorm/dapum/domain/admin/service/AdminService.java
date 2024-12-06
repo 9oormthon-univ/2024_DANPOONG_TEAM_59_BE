@@ -79,7 +79,7 @@ public class AdminService {
         }
         else if (request.state().equals("신고반려")) {
             // 해당 게시글을 신고한 모든 신고 삭제
-            careReportRepository.deleteByPostId(report.getCarePost().getId());
+            careReportRepository.deleteByCarePostId(report.getCarePost().getId());
         } else {
             throw new BadRequestException("잘못된 신고 상태입니다.");
         }
