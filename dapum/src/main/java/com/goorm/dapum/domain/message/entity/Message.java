@@ -1,9 +1,9 @@
 package com.goorm.dapum.domain.message.entity;
 
-
 import com.goorm.dapum.core.base.BaseEntity;
 import com.goorm.dapum.domain.chatroom.entity.ChatRoom;
 import com.goorm.dapum.domain.member.entity.Member;
+import com.goorm.dapum.domain.message.dto.SendRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,10 +43,11 @@ public class Message extends BaseEntity {
     @Column(nullable = false)
     private boolean isRead = false;  // 읽음 여부 (기본값 false)
 
-    public Message(Member sender, Member receiver, String content, boolean b) {
+    public Message(Member sender, Member receiver, SendRequest request, boolean b) {
         this.sender = sender;
         this.receiver = receiver;
-        this.content = content;
+        this.content = request.content();
+        this.imageUrls = request.imageUrls();
         this.isRead = b;
     }
 

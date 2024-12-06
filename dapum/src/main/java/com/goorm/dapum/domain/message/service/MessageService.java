@@ -38,7 +38,7 @@ public class MessageService {
         Member receiver = chatRoom.getMember1().equals(sender) ? chatRoom.getMember2() : chatRoom.getMember1();
 
         // 메시지 생성
-        Message message = new Message(sender, receiver, request.content(), false);
+        Message message = new Message(sender, receiver, request, false);
         message.setChatRoom(chatRoom);
 
         // 이미지 URL 추가 (null 체크 및 초기화)
@@ -50,7 +50,6 @@ public class MessageService {
         messageRepository.save(message);
         return true;
     }
-
 
     public void markMessagesAsRead(Long chatRoomId, Member receiver) {
         List<Message> unreadMessages = messageRepository.findByChatRoomIdAndReceiverIdAndIsReadFalse(chatRoomId, receiver.getId());
