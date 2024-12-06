@@ -1,5 +1,6 @@
 package com.goorm.dapum.application.controller.carePost;
 
+import com.goorm.dapum.domain.carePostReport.dto.CareReportRequest;
 import com.goorm.dapum.domain.carePost.dto.CarePostRequest;
 import com.goorm.dapum.domain.carePost.dto.CarePostResponse;
 import com.goorm.dapum.domain.carePost.dto.CarePostListResponse;
@@ -55,6 +56,14 @@ public class CarePostController {
     @Operation(summary = "특정 케어 게시물 삭제")
     public ResponseEntity<Void> deleteCarePost(@PathVariable Long carePostId) throws BadRequestException {
         carePostService.deleteCarePost(carePostId);
+        return ResponseEntity.ok().build(); // HTTP 200 반환
+    }
+
+    // 게시물 신고
+    @PostMapping("/report")
+    @Operation(summary = "게시물 신고")
+    public ResponseEntity<Void> reportPost(@RequestBody CareReportRequest request) {
+        carePostService.reportCarePost(request);
         return ResponseEntity.ok().build(); // HTTP 200 반환
     }
 }

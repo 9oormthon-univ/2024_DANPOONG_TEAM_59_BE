@@ -49,6 +49,7 @@ public class CarePost extends BaseEntity {
     private List<String> imageUrls = new ArrayList<>();  // 게시글 이미지 URL 목록
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private CarePostTag carePostTag;  // 게시글 키워드 목록
 
     private boolean isEmergency; // 긴급 돌봄 유무

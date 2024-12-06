@@ -1,5 +1,9 @@
 package com.goorm.dapum.domain.carePost.service;
 
+import com.goorm.dapum.domain.carePostReport.dto.CareReportRequest;
+import com.goorm.dapum.domain.carePostReport.entity.CareReport;
+import com.goorm.dapum.domain.carePostReport.entity.CareReportState;
+import com.goorm.dapum.domain.carePostReport.repository.CareReportRepository;
 import com.goorm.dapum.domain.careComment.dto.CareCommentResponse;
 import com.goorm.dapum.domain.careComment.service.CareCommentService;
 import com.goorm.dapum.domain.carePost.dto.CarePostRequest;
@@ -35,6 +39,8 @@ public class CarePostService {
 
     @Autowired
     private final CarePostLikeService carePostLikeService;
+    @Autowired
+    private CareReportRepository careReportRepository;
 
     // 게시물 생성
     public void createCarePost(CarePostRequest request) {
@@ -140,5 +146,24 @@ public class CarePostService {
     // 게시물 ID로 찾기
     public CarePost findById(Long carePostId) {
         return carePostRepository.findById(carePostId).orElse(null);
+    }
+
+    public void reportCarePost(CareReportRequest request) {
+        Member member = memberService.findMember();
+
+        CarePost carePost = carePostRepository.findById(request.carePostId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다."));
+
+        if (careReportRepository.findByCarePostIdAndMemberId(carePost.getId(), member.getId()).isPresent()){
+            throw new IllegalArgumentException("이미 신고한 게시글입니다.");
+        }
+
+        CareReport careReport = CareReport.builder()
+                .carePost(carePost)
+                .member(member)
+                .reason(request.reason())
+                .state(CareReportState.PENDING)
+                .build();
+        careReportRepository.save(careReport);
     }
 }

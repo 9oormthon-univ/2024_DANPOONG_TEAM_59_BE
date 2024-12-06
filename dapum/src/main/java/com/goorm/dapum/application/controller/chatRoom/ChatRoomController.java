@@ -3,7 +3,7 @@ package com.goorm.dapum.application.controller.chatRoom;
 import com.goorm.dapum.domain.chatroom.dto.ChatRoomList;
 import com.goorm.dapum.domain.chatroom.dto.ChatRoomRequest;
 import com.goorm.dapum.domain.chatroom.dto.ChatRoomResponse;
-import com.goorm.dapum.domain.chatroom.entity.TradeStateRequest;
+import com.goorm.dapum.domain.chatroom.dto.TradeStateRequest;
 import com.goorm.dapum.domain.chatroom.service.ChatRoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;

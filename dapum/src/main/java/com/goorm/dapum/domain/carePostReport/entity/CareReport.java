@@ -1,8 +1,8 @@
-package com.goorm.dapum.domain.PostReport.entity;
+package com.goorm.dapum.domain.carePostReport.entity;
 
 import com.goorm.dapum.core.base.BaseEntity;
+import com.goorm.dapum.domain.carePost.entity.CarePost;
 import com.goorm.dapum.domain.member.entity.Member;
-import com.goorm.dapum.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,16 +12,16 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PostReport extends BaseEntity {
+public class CareReport extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_report_id")
+    @Column(name = "care_post_report_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", nullable = false)
-    private Post post;  // 신고 대상 게시글
+    @JoinColumn(name = "care_post_id", nullable = false)
+    private CarePost carePost;  // 신고 대상 게시글
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
@@ -32,5 +32,5 @@ public class PostReport extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ReportState state;
+    private CareReportState state;  // 신고 상태
 }
