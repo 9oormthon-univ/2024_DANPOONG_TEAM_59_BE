@@ -39,5 +39,9 @@ public class Product {
         this.quantity = request.quantity();
         this.pointCost = request.pointCost();
     }
+
+    public void deductQuantity() {
+        this.quantity--;
+    }
 }
 
