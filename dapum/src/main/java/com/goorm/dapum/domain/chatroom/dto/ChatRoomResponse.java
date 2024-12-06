@@ -42,7 +42,7 @@ public record ChatRoomResponse(
         // CarePost 관련 값 설정
         Long carePostId = carePost != null ? carePost.getId() : null;
         String title = carePost != null ? carePost.getTitle() : "제목 없음";
-        String tag = carePost != null ? carePost.getTag().getDisplayName() : "상태 없음";
+        String tag = carePost != null ? carePost.getCarePostTag().getDisplayName() : "상태 없음";
         LocalDateTime updatedAt = carePost != null ? carePost.getUpdatedAt() : LocalDateTime.now();
 
         // ChatRoomResponse 객체 생성

@@ -16,7 +16,6 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +61,7 @@ public class CarePostService {
                 carePost.getTitle(),
                 carePost.getContent(),
                 carePost.getImageUrls(),
-                carePost.getTag().getDisplayName(), // 태그를 표시 이름으로 반환
+                carePost.getCarePostTag().getDisplayName(), // 태그를 표시 이름으로 반환
                 carePost.isEmergency(), // 긴급 여부
                 carePost.getCareDate(),
                 carePost.getStartTime(),
@@ -93,7 +92,7 @@ public class CarePostService {
                     carePost.getCareDate(),
                     carePost.getContent(),
                     carePost.getImageUrls(),
-                    carePost.getTag().getDisplayName(),  // Ensure the tag is displayed as a name
+                    carePost.getCarePostTag().getDisplayName(),  // Ensure the tag is displayed as a name
                     carePost.isEmergency(),
                     carePost.getUpdatedAt(),
                     likeCount,

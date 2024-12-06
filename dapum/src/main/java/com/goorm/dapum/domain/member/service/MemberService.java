@@ -244,7 +244,7 @@ public class MemberService {
                     carePost.getCareDate(),
                     carePost.getContent(),
                     carePost.getImageUrls(),
-                    carePost.getTag().getDisplayName(),  // Ensure the tag is displayed as a name
+                    carePost.getCarePostTag().getDisplayName(),  // Ensure the tag is displayed as a name
                     carePost.isEmergency(),
                     carePost.getUpdatedAt(),
                     likeCount,

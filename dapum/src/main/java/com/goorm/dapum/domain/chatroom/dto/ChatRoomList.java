@@ -34,7 +34,7 @@ public record ChatRoomList(
         // CarePost 정보 기반 태그 및 상태 결정
         CarePost carePost = chatRoom.getCarePost();
         String tag = carePost != null && carePost.getMember().equals(currentUser) ? "돌봄 제공" : "돌봄받기";
-        String state = carePost != null ? carePost.getTag().getDisplayName() : "상태 없음";
+        String state = carePost != null ? carePost.getCarePostTag().getDisplayName() : "상태 없음";
 
         return new ChatRoomList(
                 chatRoom.getId(),

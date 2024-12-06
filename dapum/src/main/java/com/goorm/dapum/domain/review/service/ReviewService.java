@@ -65,7 +65,7 @@ public class ReviewService {
                 .toNickname(review.getTo().getNickname())
                 .createdAt(review.getCreatedAt())
                 .title(carePost.getTitle())
-                .tag(carePost.getTag().getDisplayName())
+                .tag(carePost.getCarePostTag().getDisplayName())
                 .isEmergency(carePost.isEmergency())
                 .careDate(carePost.getCareDate())
                 .startTime(carePost.getStartTime())

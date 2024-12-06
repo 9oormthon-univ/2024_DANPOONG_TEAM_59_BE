@@ -49,7 +49,7 @@ public class CarePost extends BaseEntity {
     private List<String> imageUrls = new ArrayList<>();  // 게시글 이미지 URL 목록
 
     @Column(nullable = false)
-    private Tag tag;  // 게시글 키워드 목록
+    private CarePostTag carePostTag;  // 게시글 키워드 목록
 
     private boolean isEmergency; // 긴급 돌봄 유무
 
@@ -72,7 +72,7 @@ public class CarePost extends BaseEntity {
         this.title = request.title();
         this.content = request.content();
         this.imageUrls = request.imageUrls();
-        this.tag = request.tag(); // 추가된 필드
+        this.carePostTag = request.carePostTag(); // 추가된 필드
         this.isEmergency = request.isEmergency(); // 추가된 필드
         this.careDate = request.careDate();
         this.startTime = request.startTime();
@@ -84,7 +84,7 @@ public class CarePost extends BaseEntity {
         this.title = request.title();
         this.content = request.content();
         this.imageUrls = request.imageUrls();
-        this.tag = request.tag(); // 추가된 필드
+        this.carePostTag = request.carePostTag(); // 추가된 필드
         this.isEmergency = request.isEmergency(); // 추가된 필드
         this.careDate = request.careDate();
         this.startTime = request.startTime();
