@@ -1,8 +1,8 @@
 package com.goorm.dapum.application.controller.chatRoom;
 
 import com.goorm.dapum.domain.chatroom.dto.ChatRoomList;
+import com.goorm.dapum.domain.chatroom.dto.ChatRoomRequest;
 import com.goorm.dapum.domain.chatroom.dto.ChatRoomResponse;
-import com.goorm.dapum.domain.chatroom.dto.Id;
 import com.goorm.dapum.domain.chatroom.service.ChatRoomService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +22,8 @@ public class ChatRoomController {
 
     @PostMapping("{care_post_id}")
     @Operation(summary = "돌봄 게시글과 관련된 채팅 불러오기 (없으면 생성)")
-    public ResponseEntity<ChatRoomResponse> findOrCreateCareChatRoom(@RequestParam Long care_post_id) {
-        ChatRoomResponse chatRoomResponse = chatRoomService.findOrCreateCareChatRoom(care_post_id);
+    public ResponseEntity<ChatRoomResponse> findOrCreateCareChatRoom(@RequestBody ChatRoomRequest request) {
+        ChatRoomResponse chatRoomResponse = chatRoomService.findOrCreateChatRoom(request);
         return ResponseEntity.ok(chatRoomResponse);
     }
 
