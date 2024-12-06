@@ -43,5 +43,9 @@ public class Product {
     public void deductQuantity() {
         this.quantity--;
     }
+
+    public void addQuantity(Integer quantity) {
+        this.quantity += quantity;
+    }
 }
 

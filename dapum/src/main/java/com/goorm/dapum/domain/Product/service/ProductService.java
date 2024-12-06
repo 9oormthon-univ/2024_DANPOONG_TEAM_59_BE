@@ -1,6 +1,7 @@
 package com.goorm.dapum.domain.Product.service;
 
 import com.goorm.dapum.domain.Product.dto.ProductRequest;
+import com.goorm.dapum.domain.Product.dto.QuantityRequest;
 import com.goorm.dapum.domain.Product.entity.Product;
 import com.goorm.dapum.domain.Product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -46,4 +47,10 @@ public class ProductService {
         Product product = getProductById(productId);
         productRepository.delete(product);
     }
+
+    public void addProuctQuantity(QuantityRequest request) {
+        Product product = getProductById(request.productId());
+        product.addQuantity(request.quantity());
+    }
+
 }
