@@ -6,7 +6,9 @@ import com.goorm.dapum.domain.chatroom.dto.ChatRoomList;
 import com.goorm.dapum.domain.chatroom.dto.ChatRoomRequest;
 import com.goorm.dapum.domain.chatroom.dto.ChatRoomResponse;
 import com.goorm.dapum.domain.chatroom.entity.ChatRoom;
+import com.goorm.dapum.domain.chatroom.entity.ChatRoomTag;
 import com.goorm.dapum.domain.chatroom.entity.TradeState;
+import com.goorm.dapum.domain.chatroom.entity.TradeStateRequest;
 import com.goorm.dapum.domain.chatroom.repository.ChatRoomRepository;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.service.MemberService;
@@ -108,5 +110,33 @@ public class ChatRoomService {
         return chatRooms.stream()
                 .map(chatRoom -> ChatRoomList.from(chatRoom, currentUser))
                 .toList();
+    }
+
+    // 거래 상태 바꿈
+    public void changeTradeState(TradeStateRequest request) throws IllegalAccessException {
+        Member currentUser = memberService.findMember();
+        ChatRoom chatRoom = chatRoomRepository.findById(request.chatRoomId())
+                .orElseThrow(() -> new IllegalArgumentException("채팅방을 찾을 수 없습니다."));
+
+        TradeState newTradeState = TradeState.fromDisplayName(request.tradeState());
+
+        // 거래 상태 변경 권한 확인 및 변경
+        if (chatRoom.getChatRoomTag() == ChatRoomTag.SHARE) { // 나눔
+            Post post = chatRoom.getPost();
+            if (post.getMember().equals(currentUser)) {
+                chatRoom.changeTradeState(newTradeState);
+            } else {
+                throw new IllegalAccessException("게시글 작성자만 거래 상태를 변경할 수 있습니다.");
+            }
+        } else if (chatRoom.getChatRoomTag() == ChatRoomTag.CARE) { // 돌봄
+            CarePost carePost = chatRoom.getCarePost();
+            if (carePost.getMember().equals(currentUser)) {
+                chatRoom.changeTradeState(newTradeState);
+            } else {
+                throw new IllegalAccessException("게시글 작성자만 거래 상태를 변경할 수 있습니다.");
+            }
+        } else {
+            throw new IllegalArgumentException("유효하지 않은 ChatRoomTag입니다.");
+        }
     }
 }

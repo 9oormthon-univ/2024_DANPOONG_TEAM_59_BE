@@ -80,9 +80,11 @@ public class ChatRoom extends BaseEntity {
         return chatRoom;
     }
 
-    // 거래 완료 설정
-    public void completeTrade(String state) {
-        this.tradeState = TradeState.fromDisplayName(state);
+    // 거래 상태 설정
+    public void changeTradeState(TradeState newTradeState) {
+        if (this.tradeState != newTradeState) {
+            this.tradeState = newTradeState;
+        }
     }
 
     // 후기 작성 완료 설정
