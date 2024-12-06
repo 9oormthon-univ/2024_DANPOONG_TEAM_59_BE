@@ -21,8 +21,8 @@ public class ChatRoomController {
     @Autowired
     private final ChatRoomService chatRoomService;
 
-    @PostMapping("{care_post_id}")
-    @Operation(summary = "돌봄 게시글과 관련된 채팅 불러오기 (없으면 생성)")
+    @PostMapping("")
+    @Operation(summary = "게시글과 관련된 채팅 불러오기 (없으면 생성) / tag에는 나눔, 돌봄 두가지만 가능, id에는 게시글/돌봄게시글의 id 입력")
     public ResponseEntity<ChatRoomResponse> findOrCreateCareChatRoom(@RequestBody ChatRoomRequest request) {
         ChatRoomResponse chatRoomResponse = chatRoomService.findOrCreateChatRoom(request);
         return ResponseEntity.ok(chatRoomResponse);
