@@ -1,10 +1,10 @@
 package com.goorm.dapum.application.controller.admin;
 
 import com.goorm.dapum.domain.admin.dto.CareReportRequest;
+import com.goorm.dapum.domain.admin.dto.PostReportList;
 import com.goorm.dapum.domain.admin.dto.PostReportRequest;
 import com.goorm.dapum.domain.admin.service.AdminService;
 import com.goorm.dapum.domain.carePost.dto.CarePostListResponse;
-import com.goorm.dapum.domain.post.dto.PostListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -23,7 +23,7 @@ public class AdminController {
 
     @GetMapping("/posts")
     @Operation(summary = "게시글 신고 목록 가져오기")
-    public List<PostListResponse> getPostReportList() {
+    public List<PostReportList> getPostReportList() {
         return adminService.getPostReportList();
     }
 

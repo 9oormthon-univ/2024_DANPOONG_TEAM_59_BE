@@ -3,6 +3,7 @@ package com.goorm.dapum.domain.admin.service;
 import com.goorm.dapum.domain.PostReport.entity.PostReport;
 import com.goorm.dapum.domain.PostReport.repository.PostReportRepository;
 import com.goorm.dapum.domain.admin.dto.CareReportRequest;
+import com.goorm.dapum.domain.admin.dto.PostReportList;
 import com.goorm.dapum.domain.admin.dto.PostReportRequest;
 import com.goorm.dapum.domain.carePost.dto.CarePostListResponse;
 import com.goorm.dapum.domain.carePost.service.CarePostService;
@@ -36,9 +37,28 @@ public class AdminService {
     private final CarePostService carePostService;
 
     // 게시글 신고 목록 가져오기
-    public List<PostListResponse> getPostReportList() {
+    public List<PostReportList> getPostReportList() {
         return postReportRepository.findAll().stream()
-                .map(report -> postService.createPostListResponse(report.getPost()))
+                .map(report -> {
+                    // PostReport -> PostListResponse 변환
+                    var postResponse = postService.createPostListResponse(report.getPost());
+                    // PostReportList 생성
+                    return new PostReportList(
+                            report.getId(),                  // 신고 ID
+                            postResponse.postId(),           // 게시글 ID
+                            postResponse.memberId(),         // 회원 ID
+                            postResponse.nickname(),         // 닉네임
+                            postResponse.profileImageUrl(),  // 프로필 이미지
+                            postResponse.title(),            // 게시글 제목
+                            postResponse.content(),          // 게시글 내용
+                            postResponse.imageUrls(),        // 게시글 이미지
+                            postResponse.tags(),             // 게시글 태그
+                            postResponse.updatedAt(),        // 게시글 업데이트 시간
+                            postResponse.likeCount(),        // 좋아요 수
+                            postResponse.commentCount(),     // 댓글 수
+                            postResponse.isLiked()           // 좋아요 여부
+                    );
+                })
                 .collect(Collectors.toList());
     }
 
