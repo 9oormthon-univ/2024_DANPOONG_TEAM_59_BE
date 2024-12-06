@@ -21,7 +21,8 @@ public record ChatRoomResponse(
         LocalDateTime updatedAt,  // 게시글 마지막 수정 시간
         String tradeState,   // 거래 완료 여부
         boolean reviewCompleted,  // 후기 작성 완료 여부
-        List<MessageResponse> messages  // 메시지 목록
+        List<MessageResponse> messages,  // 메시지 목록
+        double otherTemperature
 ) {
     public static ChatRoomResponse from(
             ChatRoom chatRoom,
@@ -36,6 +37,7 @@ public record ChatRoomResponse(
                 : chatRoom.getMember1();
         String otherUserName = otherUser.getNickname();
         String otherProfileImage = otherUser.getProfileImageUrl();
+        double otherTemperature = otherUser.getTemperature();
 
         // CarePost와 Post 정보 확인
         CarePost carePost = chatRoom.getCarePost();
@@ -60,7 +62,8 @@ public record ChatRoomResponse(
                 updatedAt,
                 tradeState,
                 reviewCompleted,
-                messages
+                messages,
+                otherTemperature
         );
     }
 }

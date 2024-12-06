@@ -45,59 +45,81 @@ public class ChatRoomService {
     // CarePost 또는 Post 기반 채팅방 생성 또는 가져오기
     public ChatRoomResponse findOrCreateChatRoom(ChatRoomRequest request) {
         Member currentUser = memberService.findMember();
-        ChatRoom chatRoom;
+        ChatRoom chatRoom = findOrCreateChatRoomByTag(request, currentUser);
 
-        // `tag` 값에 따라 CarePost 또는 Post로 처리
+        chatRoom = saveChatRoom(chatRoom);
+
+        List<MessageResponse> messageResponses = getMessageResponses(chatRoom);
+
+        messageService.markMessagesAsRead(chatRoom.getId(), currentUser);
+
+        String tradeState = getTradeState(chatRoom);
+
+        boolean reviewCompleted = checkReviewCompletion(chatRoom, currentUser);
+
+        return ChatRoomResponse.from(chatRoom, messageResponses, currentUser, tradeState, reviewCompleted);
+    }
+
+    // ChatRoom 생성 또는 찾기
+    private ChatRoom findOrCreateChatRoomByTag(ChatRoomRequest request, Member currentUser) {
         if ("돌봄".equals(request.tag())) {
-            CarePost carePost = carePostRepository.findById(request.id())
-                    .orElseThrow(() -> new IllegalArgumentException("CarePost를 찾을 수 없습니다."));
-
-            Member otherMember = carePost.getMember();
-
-            // CarePost 기반 채팅방 생성 또는 가져오기
-            chatRoom = chatRoomRepository.findByCarePostId(request.id())
-                    .orElseGet(() -> ChatRoom.createCareChatRoom(currentUser, otherMember, carePost));
+            return findOrCreateCareChatRoom(request, currentUser);
         } else if ("나눔".equals(request.tag())) {
-            Post post = postRepository.findById(request.id())
-                    .orElseThrow(() -> new IllegalArgumentException("Post를 찾을 수 없습니다."));
-
-            Member otherMember = post.getMember();
-
-            // Post 기반 채팅방 생성 또는 가져오기
-            chatRoom = chatRoomRepository.findByPostId(request.id())
-                    .orElseGet(() -> ChatRoom.createPostChatRoom(currentUser, otherMember, post));
+            return findOrCreateShareChatRoom(request, currentUser);
         } else {
             throw new IllegalArgumentException("유효하지 않은 tag 값입니다. '돌봄' 또는 '나눔'을 사용하세요.");
         }
+    }
 
-        // 채팅방 저장
-        chatRoom = chatRoomRepository.save(chatRoom);
+    // CarePost 기반 ChatRoom 생성 또는 찾기
+    private ChatRoom findOrCreateCareChatRoom(ChatRoomRequest request, Member currentUser) {
+        CarePost carePost = carePostRepository.findById(request.id())
+                .orElseThrow(() -> new IllegalArgumentException("CarePost를 찾을 수 없습니다."));
 
-        // 메시지 가져오기
+        Member otherMember = carePost.getMember();
+        return chatRoomRepository.findByCarePostId(request.id())
+                .orElseGet(() -> ChatRoom.createCareChatRoom(currentUser, otherMember, carePost));
+    }
+
+    // Post 기반 ChatRoom 생성 또는 찾기
+    private ChatRoom findOrCreateShareChatRoom(ChatRoomRequest request, Member currentUser) {
+        Post post = postRepository.findById(request.id())
+                .orElseThrow(() -> new IllegalArgumentException("Post를 찾을 수 없습니다."));
+
+        Member otherMember = post.getMember();
+        return chatRoomRepository.findByPostId(request.id())
+                .orElseGet(() -> ChatRoom.createPostChatRoom(currentUser, otherMember, post));
+    }
+
+    // ChatRoom 저장
+    private ChatRoom saveChatRoom(ChatRoom chatRoom) {
+        return chatRoomRepository.save(chatRoom);
+    }
+
+    // 메시지 목록 가져오기 및 변환
+    private List<MessageResponse> getMessageResponses(ChatRoom chatRoom) {
         List<Message> messages = messageRepository.findByChatRoomIdOrderByCreatedAtAsc(chatRoom.getId());
-        List<MessageResponse> messageResponses = messages.stream()
+        return messages.stream()
                 .map(MessageResponse::new)
                 .toList();
+    }
 
-        // 안읽은 메시지 읽음 처리
-        messageService.markMessagesAsRead(chatRoom.getId(), currentUser);
+    // 거래 상태 가져오기
+    private String getTradeState(ChatRoom chatRoom) {
+        return chatRoom.getTradeState().getDisplayName();
+    }
 
-        // 거래 완료 상태
-        String tradeState = chatRoom.getTradeState().getDisplayName();
-
-        // 현재 사용자의 리뷰 작성 상태 확인
-        boolean reviewCompleted;
+    // 리뷰 완료 여부 확인
+    private boolean checkReviewCompletion(ChatRoom chatRoom, Member currentUser) {
         if (chatRoom.getMember1().equals(currentUser)) {
-            reviewCompleted = chatRoom.isMember1ReviewCompleted();
+            return chatRoom.isMember1ReviewCompleted();
         } else if (chatRoom.getMember2().equals(currentUser)) {
-            reviewCompleted = chatRoom.isMember2ReviewCompleted();
+            return chatRoom.isMember2ReviewCompleted();
         } else {
             throw new IllegalArgumentException("현재 사용자는 이 채팅방의 참여자가 아닙니다.");
         }
-
-        // ChatRoomResponse 생성
-        return ChatRoomResponse.from(chatRoom, messageResponses, currentUser, tradeState, reviewCompleted);
     }
+
 
     // 현재 사용자의 채팅 목록 가져오기
     public List<ChatRoomList> getChatRooms() {
@@ -111,6 +133,24 @@ public class ChatRoomService {
                 .map(chatRoom -> ChatRoomList.from(chatRoom, currentUser))
                 .toList();
     }
+
+    public ChatRoomResponse getChatRoom(Long chatRoomId) {
+        Member currentUser = memberService.findMember();
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("채팅방을 찾을 수 없습니다."));
+
+        List<MessageResponse> messageResponses = getMessageResponses(chatRoom);
+
+        // 안읽은 메시지 읽음 처리
+        messageService.markMessagesAsRead(chatRoom.getId(), currentUser);
+
+        String tradeState = getTradeState(chatRoom);
+
+        boolean reviewCompleted = checkReviewCompletion(chatRoom, currentUser);
+
+        return ChatRoomResponse.from(chatRoom, messageResponses, currentUser, tradeState, reviewCompleted);
+    }
+
 
     // 거래 상태 바꿈
     public void changeTradeState(TradeStateRequest request) throws IllegalAccessException {
