@@ -44,8 +44,9 @@ public class ChatRoom extends BaseEntity {
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();  // 해당 채팅방의 메시지들
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private boolean tradeCompleted = false; // 거래 완료 여부
+    private TradeState tradeState = TradeState.DISCUSSION; // 거래 여부 (거래아님, 예약, 거래완료)
 
     @Column(nullable = false)
     private boolean member1ReviewCompleted = false; // 후기 작성 여부
@@ -80,8 +81,8 @@ public class ChatRoom extends BaseEntity {
     }
 
     // 거래 완료 설정
-    public void completeTrade() {
-        this.tradeCompleted = true;
+    public void completeTrade(String state) {
+        this.tradeState = TradeState.fromDisplayName(state);
     }
 
     // 후기 작성 완료 설정
