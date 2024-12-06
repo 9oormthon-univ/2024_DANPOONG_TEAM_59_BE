@@ -29,4 +29,8 @@ public class PostReport extends BaseEntity {
 
     @Column(nullable = false)
     private String reason;  // 신고 사유
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ReportState state;
 }
