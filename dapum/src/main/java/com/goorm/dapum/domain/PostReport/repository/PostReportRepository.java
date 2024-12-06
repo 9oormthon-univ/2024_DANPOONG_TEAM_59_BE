@@ -6,5 +6,7 @@ import java.util.Optional;
 
 public interface PostReportRepository extends JpaRepository<PostReport, Long> {
     Optional<PostReport> findByPostIdAndMemberId(Long postId, Long memberId); // 중복 신고 방지
+
+    void deleteByPostId(Long id);
 }
 

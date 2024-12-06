@@ -78,33 +78,39 @@ public class PostService {
         List<PostListResponse> responses = new ArrayList<>();
 
         for (Post post : posts) {
-            Long likeCount = postLikeService.getLikeCount(post.getId());
-            Long commentCount = commentService.getCommentsCount(post.getId());
-            boolean liked = postLikeService.isLiked(post.getId());
-            // PostTag를 List<String>으로 변환
-            List<String> tagNames = post.getPostTags().stream()
-                    .map(tag -> tag.getDisplayName())
-                    .toList();
-
-            PostListResponse response = new PostListResponse(
-                    post.getId(),
-                    post.getMember().getId(),
-                    post.getMember().getNickname(),
-                    post.getMember().getProfileImageUrl(),
-                    post.getTitle(),
-                    post.getContent(),
-                    post.getImageUrls(),
-                    tagNames,
-                    post.getUpdatedAt(),
-                    likeCount,
-                    commentCount,
-                    liked
-            );
+            PostListResponse response = createPostListResponse(post);
             responses.add(response);
         }
 
         return responses;
     }
+
+    public PostListResponse createPostListResponse(Post post) {
+        Long likeCount = postLikeService.getLikeCount(post.getId());
+        Long commentCount = commentService.getCommentsCount(post.getId());
+        boolean liked = postLikeService.isLiked(post.getId());
+
+        // PostTag를 List<String>으로 변환
+        List<String> tagNames = post.getPostTags().stream()
+                .map(tag -> tag.getDisplayName())
+                .toList();
+
+        return new PostListResponse(
+                post.getId(),
+                post.getMember().getId(),
+                post.getMember().getNickname(),
+                post.getMember().getProfileImageUrl(),
+                post.getTitle(),
+                post.getContent(),
+                post.getImageUrls(),
+                tagNames,
+                post.getUpdatedAt(),
+                likeCount,
+                commentCount,
+                liked
+        );
+    }
+
 
     // 게시물 업데이트
     public void UpdatePost(Long postId, PostRequest request) throws BadRequestException {

@@ -75,7 +75,10 @@ public class CarePostService {
                 carePost.getUpdatedAt(),
                 comments,
                 likeCount,
-                liked
+                liked,
+                carePost.getMember().getNeighborhood().getProvince(),
+                carePost.getMember().getNeighborhood().getCity(),
+                carePost.getMember().getNeighborhood().getDistrict()
         );
     }
 
@@ -85,31 +88,36 @@ public class CarePostService {
         List<CarePostListResponse> responses = new ArrayList<>();
 
         for (CarePost carePost : carePosts) {
-            Long likeCount = carePostLikeService.getLikeCount(carePost.getId());
-            Long commentCount = careCommentService.getCommentsCount(carePost.getId());
-            boolean liked = carePostLikeService.isLiked(carePost.getId());
-
-            CarePostListResponse response = new CarePostListResponse(
-                    carePost.getId(),
-                    carePost.getMember().getId(),
-                    carePost.getMember().getNickname(),
-                    carePost.getMember().getProfileImageUrl(),
-                    carePost.getTitle(),
-                    carePost.getCareDate(),
-                    carePost.getContent(),
-                    carePost.getImageUrls(),
-                    carePost.getCarePostTag().getDisplayName(),  // Ensure the tag is displayed as a name
-                    carePost.isEmergency(),
-                    carePost.getUpdatedAt(),
-                    likeCount,
-                    commentCount,
-                    liked
-            );
+            CarePostListResponse response = createCarePostListResponse(carePost);
             responses.add(response);
         }
 
         return responses;
     }
+
+    public CarePostListResponse createCarePostListResponse(CarePost carePost) {
+        Long likeCount = carePostLikeService.getLikeCount(carePost.getId());
+        Long commentCount = careCommentService.getCommentsCount(carePost.getId());
+        boolean liked = carePostLikeService.isLiked(carePost.getId());
+
+        return new CarePostListResponse(
+                carePost.getId(),
+                carePost.getMember().getId(),
+                carePost.getMember().getNickname(),
+                carePost.getMember().getProfileImageUrl(),
+                carePost.getTitle(),
+                carePost.getCareDate(),
+                carePost.getContent(),
+                carePost.getImageUrls(),
+                carePost.getCarePostTag().getDisplayName(),  // 태그의 이름을 가져오는 부분
+                carePost.isEmergency(),
+                carePost.getUpdatedAt(),
+                likeCount,
+                commentCount,
+                liked
+        );
+    }
+
 
     // 게시물 업데이트
     public void updateCarePost(Long carePostId, CarePostRequest request) throws BadRequestException {

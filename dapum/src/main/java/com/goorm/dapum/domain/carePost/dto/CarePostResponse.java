@@ -23,6 +23,9 @@ public record CarePostResponse(
         LocalDateTime updatedAt,
         List<CareCommentResponse> commentResponse,
         Long likeCount,
-        boolean isLike
+        boolean isLike,
+        String province,
+        String city,
+        String district
 ) {
 }
