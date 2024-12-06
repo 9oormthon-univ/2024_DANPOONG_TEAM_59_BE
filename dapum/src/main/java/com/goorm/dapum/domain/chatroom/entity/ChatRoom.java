@@ -48,7 +48,11 @@ public class ChatRoom extends BaseEntity {
     private boolean tradeCompleted = false; // 거래 완료 여부
 
     @Column(nullable = false)
-    private boolean reviewCompleted = false; // 후기 작성 여부
+    private boolean member1ReviewCompleted = false; // 후기 작성 여부
+
+    @Column(nullable = false)
+    private boolean member2ReviewCompleted = false; // 후기 작성 여부
+
 
     // 생성자
     public ChatRoom(Member member1, Member member2, ChatRoomTag chatRoomTag) {
@@ -81,7 +85,11 @@ public class ChatRoom extends BaseEntity {
     }
 
     // 후기 작성 완료 설정
-    public void completeReview() {
-        this.reviewCompleted = true;
+    public void completeMember1Review() {
+        this.member1ReviewCompleted = true;
+    }
+
+    public void completeMember2Review() {
+        this.member2ReviewCompleted = true;
     }
 }
