@@ -6,6 +6,7 @@ import com.goorm.dapum.domain.chatroom.dto.ChatRoomList;
 import com.goorm.dapum.domain.chatroom.dto.ChatRoomRequest;
 import com.goorm.dapum.domain.chatroom.dto.ChatRoomResponse;
 import com.goorm.dapum.domain.chatroom.entity.ChatRoom;
+import com.goorm.dapum.domain.chatroom.entity.TradeState;
 import com.goorm.dapum.domain.chatroom.repository.ChatRoomRepository;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.service.MemberService;
@@ -80,7 +81,7 @@ public class ChatRoomService {
         messageService.markMessagesAsRead(chatRoom.getId(), currentUser);
 
         // 거래 완료 상태
-        boolean tradeCompleted = chatRoom.isTradeCompleted();
+        String tradeState = chatRoom.getTradeState().getDisplayName();
 
         // 현재 사용자의 리뷰 작성 상태 확인
         boolean reviewCompleted;
@@ -93,7 +94,7 @@ public class ChatRoomService {
         }
 
         // ChatRoomResponse 생성
-        return ChatRoomResponse.from(chatRoom, messageResponses, currentUser, tradeCompleted, reviewCompleted);
+        return ChatRoomResponse.from(chatRoom, messageResponses, currentUser, tradeState, reviewCompleted);
     }
 
     // 현재 사용자의 채팅 목록 가져오기

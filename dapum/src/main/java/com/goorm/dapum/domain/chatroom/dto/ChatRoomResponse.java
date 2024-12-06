@@ -19,7 +19,7 @@ public record ChatRoomResponse(
         String title,             // 게시글 제목
         String tag,               // ChatRoom 태그 (돌봄, 나눔)
         LocalDateTime updatedAt,  // 게시글 마지막 수정 시간
-        boolean tradeCompleted,   // 거래 완료 여부
+        String tradeState,   // 거래 완료 여부
         boolean reviewCompleted,  // 후기 작성 완료 여부
         List<MessageResponse> messages  // 메시지 목록
 ) {
@@ -27,7 +27,7 @@ public record ChatRoomResponse(
             ChatRoom chatRoom,
             List<MessageResponse> messages,
             Member currentUser,
-            boolean tradeCompleted,
+            String tradeState,
             boolean reviewCompleted
     ) {
         // 상대방 정보 추출
@@ -58,7 +58,7 @@ public record ChatRoomResponse(
                 title,
                 tag,
                 updatedAt,
-                tradeCompleted,
+                tradeState,
                 reviewCompleted,
                 messages
         );
