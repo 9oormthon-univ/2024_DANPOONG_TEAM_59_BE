@@ -1,10 +1,18 @@
 package com.goorm.dapum.domain.member.service;
 
-import com.goorm.dapum.application.dto.member.Neighborhood;
+import com.goorm.dapum.application.dto.member.NeighborhoodRequest;
 import com.goorm.dapum.application.dto.member.Nickname;
+import com.goorm.dapum.domain.careComment.repository.CareCommentRepository;
+import com.goorm.dapum.domain.carePost.dto.CarePostListResponse;
+import com.goorm.dapum.domain.carePost.entity.CarePost;
+import com.goorm.dapum.domain.carePost.repository.CarePostRepository;
+import com.goorm.dapum.domain.carePostLike.entity.CarePostLike;
+import com.goorm.dapum.domain.carePostLike.repository.CarePostLikeRepository;
 import com.goorm.dapum.domain.comment.repository.CommentRepository;
 import com.goorm.dapum.domain.member.dto.MemberRequest;
 import com.goorm.dapum.domain.member.entity.Member;
+import com.goorm.dapum.domain.member.entity.Neighborhood;
+import com.goorm.dapum.domain.member.entity.Status;
 import com.goorm.dapum.domain.member.repository.MemberRepository;
 import com.goorm.dapum.domain.post.dto.PostListResponse;
 import com.goorm.dapum.domain.post.entity.Post;
@@ -12,6 +20,8 @@ import com.goorm.dapum.domain.post.repository.PostRepository;
 import com.goorm.dapum.domain.postLike.dto.PostLikeList;
 import com.goorm.dapum.domain.postLike.entity.PostLike;
 import com.goorm.dapum.domain.postLike.repository.PostLikeRepository;
+import com.goorm.dapum.domain.userPoint.service.UserPointService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +33,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MemberService {
     @Autowired
     private MemberRepository memberRepository;
@@ -36,8 +47,22 @@ public class MemberService {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private UserPointService userPointService;
+
+    @Autowired
+    private CarePostRepository carePostRepository;
+
+    @Autowired
+    private CarePostLikeRepository carePostLikeRepository;
+
+    @Autowired
+    private final CareCommentRepository careCommentRepository;
+
     public void create(MemberRequest request) {
-        memberRepository.save(new Member(request));
+        Member member =new Member(request);
+        userPointService.createInitialPoint(member);
+        memberRepository.save(member);
     }
 
     public boolean existsByEmail(String email) {
@@ -47,6 +72,9 @@ public class MemberService {
     public void updateNickname(Nickname nickname) {
         Member member = findMember();
         member.updateNickname(nickname);
+        System.out.println("사용자 이름 " + member.getKakaoName());
+        System.out.println("사용자 닉네임 " + member.getNickname());
+        System.out.println("입력한 닉네임 " + nickname.nickname());
         memberRepository.save(member);
     }
 
@@ -55,12 +83,18 @@ public class MemberService {
         if (email == null) {
             return null;
         }
-        return memberRepository.findByEmail(email);
+        return findByEmail(email);
     }
 
-    public void updateNeighborhood(Neighborhood neighborhood) {
+    public void updateNeighborhood(NeighborhoodRequest neighborhoodRequest) {
         Member member = findMember();
+        Neighborhood neighborhood = new Neighborhood(neighborhoodRequest);
         member.updateNeighborhood(neighborhood);
+        memberRepository.save(member);
+        System.out.println("사용자 이름 " + member.getKakaoName());
+        System.out.println("시/도 " + member.getNeighborhood().getProvince());
+        System.out.println("구/군 " + member.getNeighborhood().getCity());
+        System.out.println("읍/면/동 " + member.getNeighborhood().getDistrict());
     }
 
     public List<PostLikeList> getPostLikeList() {
@@ -74,9 +108,14 @@ public class MemberService {
 
         for (PostLike postLike : postLikes) {
             Post post = postLike.getPost(); // 좋아요 된 게시물
-            Long likeCount = getLikeCount(post.getId());
-            Long commentCount = getCommentsCount(post.getId());
-            boolean liked = isLiked(post.getId());
+            Long likeCount = getLikeCount(post);
+            Long commentCount = getCommentsCount(post);
+            boolean liked = isLiked(member, post);
+
+            // PostTag를 List<String>으로 변환
+            List<String> tagNames = post.getPostTags().stream()
+                    .map(tag -> tag.getDisplayName())
+                    .toList();
 
             PostLikeList response = new PostLikeList(
                     post.getId(),
@@ -85,7 +124,7 @@ public class MemberService {
                     post.getTitle(),
                     post.getContent(),
                     post.getImageUrls(),
-                    post.getTags(),
+                    tagNames,
                     post.getUpdatedAt(),
                     likeCount,
                     commentCount,
@@ -98,20 +137,15 @@ public class MemberService {
         return responses;
     }
 
-    public long getCommentsCount(Long postId) {
-        Post post = postRepository.findById(postId).orElse(null);
+    public long getCommentsCount(Post post) {
         return commentRepository.countByPost(post);
     }
 
-    public long getLikeCount(Long postId) {
-        Post post = postRepository.findById(postId).orElse(null);
+    public long getLikeCount(Post post) {
         return postLikeRepository.countByPostAndStatus(post, true); // true: 좋아요 개수만 카운트
     }
 
-    public boolean isLiked(Long postId) {
-        Post post = postRepository.findById(postId).orElse(null);
-        Member member = findMember();
-
+    public boolean isLiked(Member member, Post post) {
         PostLike existingLike = postLikeRepository.findByPostAndMember(post, member)
                 .orElse(null);
 
@@ -119,8 +153,28 @@ public class MemberService {
         return existingLike != null && existingLike.getStatus();
     }
 
+    private boolean careIsLiked(Member member, CarePost carePost) {
+        CarePostLike existingLike = carePostLikeRepository.findByCarePostAndMember(carePost, member)
+                .orElse(null);
+
+        // 좋아요 상태가 true이면 true 반환, 아니면 false 반환
+        return existingLike != null && existingLike.getStatus();
+    }
+
+    private Long getCareCommentsCount(CarePost carePost) {
+        return careCommentRepository.countByCarePost(carePost);
+    }
+
+    private Long getCareLikeCount(CarePost carePost) {
+        return carePostLikeRepository.countByCarePostAndStatus(carePost, true); // true: 좋아요 개수만 카운트
+    }
+
     public Member findById(Long receiverId) {
         return memberRepository.findById(receiverId).orElse(null);
+    }
+
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 
     public List<PostListResponse> getMyPosts() {
@@ -133,24 +187,70 @@ public class MemberService {
         List<PostListResponse> responses = new ArrayList<>();
 
         for (Post post : posts) {
-            Long likeCount = getLikeCount(post.getId());
-            Long commentCount = getCommentsCount(post.getId());
-            boolean liked = isLiked(post.getId());
+            Long likeCount = getLikeCount(post);
+            Long commentCount = getCommentsCount(post);
+            boolean liked = isLiked(member, post);
+
+            // PostTag를 List<String>으로 변환
+            List<String> tagNames = post.getPostTags().stream()
+                    .map(tag -> tag.getDisplayName())
+                    .toList();
 
             PostListResponse response = new PostListResponse(
                     post.getId(),
                     post.getMember().getId(),
                     post.getMember().getNickname(),
+                    post.getMember().getProfileImageUrl(),
                     post.getTitle(),
                     post.getContent(),
                     post.getImageUrls(),
-                    post.getTags(),
+                    tagNames,
                     post.getUpdatedAt(),
                     likeCount,
                     commentCount,
                     liked
             );
 
+            responses.add(response);
+        }
+
+        return responses;
+    }
+
+    public void updateStatus(Member member, Status status) {
+        member.updateStatus(Status.ACTIVE);
+        memberRepository.save(member);
+    }
+
+    // 사용자의 돌봄을 제공한 게시물 가져오기
+    public List<CarePostListResponse> getMyCares() {
+        // 현재 로그인한 사용자 조회
+        Member member = findMember();
+
+        // 사용자가 작성한 게시물만 조회
+        List<CarePost> carePosts = carePostRepository.findByMemberId(member.getId());
+        List<CarePostListResponse> responses = new ArrayList<>();
+
+        for (CarePost carePost : carePosts) {
+            Long likeCount = getCareLikeCount(carePost);
+            Long commentCount = getCareCommentsCount(carePost);
+            boolean liked = careIsLiked(member, carePost);
+            CarePostListResponse response = new CarePostListResponse(
+                    carePost.getId(),
+                    carePost.getMember().getId(),
+                    carePost.getMember().getNickname(),
+                    carePost.getMember().getProfileImageUrl(),
+                    carePost.getTitle(),
+                    carePost.getCareDate(),
+                    carePost.getContent(),
+                    carePost.getImageUrls(),
+                    carePost.getCarePostTag().getDisplayName(),  // Ensure the tag is displayed as a name
+                    carePost.isEmergency(),
+                    carePost.getUpdatedAt(),
+                    likeCount,
+                    commentCount,
+                    liked
+            );
             responses.add(response);
         }
 

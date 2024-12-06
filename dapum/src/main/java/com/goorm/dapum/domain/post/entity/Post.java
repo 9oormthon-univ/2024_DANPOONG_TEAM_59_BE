@@ -1,8 +1,10 @@
 package com.goorm.dapum.domain.post.entity;
 
 import com.goorm.dapum.core.base.BaseEntity;
+import com.goorm.dapum.domain.comment.entity.Comment;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.post.dto.PostRequest;
+import com.goorm.dapum.domain.postLike.entity.PostLike;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,28 +34,50 @@ public class Post extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;  // 게시글 내용 (긴 텍스트 지원)
 
-    @ElementCollection // 값 타입 컬렉션 매핑
-    @CollectionTable(name = "post_image_urls", joinColumns = @JoinColumn(name = "post_id"))
-    @Column(name = "image_url")
-    private List<String> imageUrls = new ArrayList<>();  // 게시글 이미지 URL 목록
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostLike> likes = new ArrayList<>();
 
     @ElementCollection // 값 타입 컬렉션 매핑
-    @CollectionTable(name = "post_keywords", joinColumns = @JoinColumn(name = "post_id"))
+    @CollectionTable(name = "post_image_urls", joinColumns = @JoinColumn(name = "post_id"))
+    @Column(name = "image_url", length = 2083)
+    private List<String> imageUrls = new ArrayList<>();  // 게시글 이미지 URL 목록
+
+    @ElementCollection(fetch = FetchType.LAZY) // 값 타입 컬렉션 매핑
+    @CollectionTable(name = "post_tags", joinColumns = @JoinColumn(name = "post_id"))
+    @Enumerated(EnumType.STRING) // Enum을 String 형태로 저장
     @Column(name = "tag")
-    private List<String> tags = new ArrayList<>();  // 게시글 키워드 목록
+    private List<PostTag> postTags = new ArrayList<>();  // 게시글 태그 목록 (Enum)
 
     public Post(Member member, PostRequest request) {
         this.member = member;
         this.title = request.title();
         this.content = request.content();
         this.imageUrls = request.imageUrls();
-        this.tags = request.tags();
+        this.postTags = convertStringsToTags(request.postTags()); // 요청에서 받아온 태그 설정
     }
 
     public void update(PostRequest request) {
         this.title = request.title();
         this.content = request.content();
         this.imageUrls = request.imageUrls();
-        this.tags = request.tags();
+        this.postTags = convertStringsToTags(request.postTags());  // 태그 업데이트
+    }
+
+    private List<PostTag> convertStringsToTags(List<String> tagStrings) {
+        if (tagStrings == null || tagStrings.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<PostTag> postTags = new ArrayList<>();
+        for (String tagString : tagStrings) {
+            try {
+                postTags.add(PostTag.fromDisplayName(tagString));
+            } catch (IllegalArgumentException e) {
+                // 처리하지 못하는 태그는 로그를 남기거나 무시
+            }
+        }
+        return postTags;
     }
 }

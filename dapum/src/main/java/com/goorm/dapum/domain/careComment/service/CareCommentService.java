@@ -8,6 +8,7 @@ import com.goorm.dapum.domain.carePost.entity.CarePost;
 import com.goorm.dapum.domain.carePost.repository.CarePostRepository;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.service.MemberService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CareCommentService {
 
     @Autowired

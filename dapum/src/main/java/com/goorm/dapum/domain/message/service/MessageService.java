@@ -1,65 +1,61 @@
 package com.goorm.dapum.domain.message.service;
 
+import com.goorm.dapum.domain.chatroom.entity.ChatRoom;
+import com.goorm.dapum.domain.chatroom.repository.ChatRoomRepository;
 import com.goorm.dapum.domain.member.entity.Member;
 import com.goorm.dapum.domain.member.service.MemberService;
 import com.goorm.dapum.domain.message.dto.SendRequest;
 import com.goorm.dapum.domain.message.entity.Message;
 import com.goorm.dapum.domain.message.repository.MessageRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MessageService {
+    @Autowired
     private final MessageRepository messageRepository;
+    @Autowired
     private final MemberService memberService;
+    @Autowired
+    private ChatRoomRepository chatRoomRepository;
 
     // 메시지 전송
-    public void sendMessage(SendRequest sendRequest) {
+    public boolean sendMessage(Long chatRoomId, SendRequest request) {
+        // 현재 로그인된 사용자(발신자) 찾기
         Member sender = memberService.findMember();
-        Member receiver = memberService.findById(sendRequest.receiverId());
 
-        Message message = new Message(sender, receiver, sendRequest.content(), false);
+        // 채팅방 조회
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
 
+        // 수신자 설정
+        Member receiver = chatRoom.getMember1().equals(sender) ? chatRoom.getMember2() : chatRoom.getMember1();
+
+        // 메시지 생성
+        Message message = new Message(sender, receiver, request, false);
+        message.setChatRoom(chatRoom);
+
+        // 이미지 URL 추가 (null 체크 및 초기화)
+        if (request.imageUrls() != null && !request.imageUrls().isEmpty()) {
+            message.getImageUrls().addAll(request.imageUrls());
+        }
+
+        // 메시지 저장
         messageRepository.save(message);
+        return true;
     }
 
-    // 대화 내역 조회
-    public List<Message> getConversation(Long memberId) {
-        Member loggedInMember = memberService.findMember();
-        return messageRepository.findBySenderIdOrReceiverIdOrderByCreatedAt(loggedInMember.getId(), memberId);
-    }
-
-    // 읽지 않은 메시지 수
-    public long getUnreadMessageCount() {
-        Long receiverId = memberService.findMember().getId();
-        return messageRepository.countByReceiverIdAndIsReadFalse(receiverId);
-    }
-
-    // 메시지 읽음 처리
-    public void markMessagesAsRead(Long senderId) {
-        Member receiver = memberService.findMember();
-        List<Message> unreadMessages = messageRepository.findBySenderIdAndReceiverIdOrderByCreatedAt(senderId, receiver.getId());
-        unreadMessages.forEach(message -> message.setRead(true));
+    public void markMessagesAsRead(Long chatRoomId, Member receiver) {
+        List<Message> unreadMessages = messageRepository.findByChatRoomIdAndReceiverIdAndIsReadFalse(chatRoomId, receiver.getId());
+        for (Message message : unreadMessages) {
+            message.setRead(true);
+        }
         messageRepository.saveAll(unreadMessages);
-    }
-
-    // 나와 메시지를 주고받은 사람 목록
-    public List<Member> getChatParticipants() {
-        Member loggedInMember = memberService.findMember();
-
-        // 발신자 또는 수신자로 등장한 메시지의 관련 회원 조회
-        List<Message> messages = messageRepository.findBySenderIdOrReceiverIdOrderByCreatedAt(
-                loggedInMember.getId(), loggedInMember.getId());
-
-        // 발신자와 수신자 중 나 자신을 제외한 고유 회원 목록 반환
-        return messages.stream()
-                .map(message -> message.getSender().getId().equals(loggedInMember.getId())
-                        ? message.getReceiver()
-                        : message.getSender())
-                .distinct()
-                .toList();
     }
 }

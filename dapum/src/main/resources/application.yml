@@ -4,6 +4,7 @@ spring:
       database-platform: org.hibernate.dialect.MySQL8Dialect
       ddl-auto: update
       show_sql: true
+    open-in-view: true
   servlet:
     multipart:
       enabled: true
@@ -11,10 +12,14 @@ spring:
       max-request-size: 15MB
   config:
     additional-location: classpath:application-secret.yml
+
 logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type: TRACE
+    org.springframework.web: DEBUG
+    org.springframework.web.filter: DEBUG
+    org.springframework.boot.context.config: DEBUG
 
 server:
   servlet:
@@ -22,5 +27,3 @@ server:
       charset: UTF-8
       enabled: true
       force: true
-  tomcat:
-    max-http-form-post-size: 15MB

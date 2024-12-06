@@ -1,5 +1,8 @@
 package com.goorm.dapum.domain.post.service;
 
+import com.goorm.dapum.domain.PostReport.dto.PostReportRequest;
+import com.goorm.dapum.domain.PostReport.entity.PostReport;
+import com.goorm.dapum.domain.PostReport.repository.PostReportRepository;
 import com.goorm.dapum.domain.comment.dto.CommentResponse;
 import com.goorm.dapum.domain.comment.service.CommentService;
 import com.goorm.dapum.domain.member.entity.Member;
@@ -10,6 +13,7 @@ import com.goorm.dapum.domain.post.dto.PostListResponse;
 import com.goorm.dapum.domain.post.entity.Post;
 import com.goorm.dapum.domain.post.repository.PostRepository;
 import com.goorm.dapum.domain.postLike.service.PostLikeService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +24,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PostService {
     @Autowired
     private final PostRepository postRepository;
@@ -33,6 +38,9 @@ public class PostService {
     @Autowired
     private final PostLikeService postLikeService;
 
+    @Autowired
+    private final PostReportRepository postReportRepository;
+
     // 게시물 생성
     public void CreatePost(PostRequest request) {
         Member member = memberService.findMember();
@@ -45,13 +53,18 @@ public class PostService {
         List<CommentResponse> comments = commentService.getComments(post.getId());
         Long likeCount = postLikeService.getLikeCount(post.getId());
         boolean liked = postLikeService.isLiked(post.getId());
+        // PostTag를 List<String>으로 변환
+        List<String> tagNames = post.getPostTags().stream()
+                .map(tag -> tag.getDisplayName())
+                .toList();
         return new PostResponse(
                 post.getId(),
                 post.getMember().getId(),
                 post.getMember().getNickname(),
                 post.getMember().getProfileImageUrl(),
                 post.getTitle(), post.getContent(),
-                post.getImageUrls(), post.getTags(),
+                post.getImageUrls(),
+                tagNames,
                 post.getUpdatedAt(),
                 comments,
                 likeCount,
@@ -67,14 +80,20 @@ public class PostService {
             Long likeCount = postLikeService.getLikeCount(post.getId());
             Long commentCount = commentService.getCommentsCount(post.getId());
             boolean liked = postLikeService.isLiked(post.getId());
+            // PostTag를 List<String>으로 변환
+            List<String> tagNames = post.getPostTags().stream()
+                    .map(tag -> tag.getDisplayName())
+                    .toList();
+
             PostListResponse response = new PostListResponse(
                     post.getId(),
                     post.getMember().getId(),
                     post.getMember().getNickname(),
+                    post.getMember().getProfileImageUrl(),
                     post.getTitle(),
                     post.getContent(),
                     post.getImageUrls(),
-                    post.getTags(),
+                    tagNames,
                     post.getUpdatedAt(),
                     likeCount,
                     commentCount,
@@ -126,4 +145,27 @@ public class PostService {
     public Post findById(Long postId) {
         return postRepository.findById(postId).orElse(null);
     }
+
+    // 게시물 신고
+    public void reportPost(PostReportRequest request) {
+        Member member = memberService.findMember(); // 현재 로그인한 사용자
+
+        // 신고 대상 게시글 확인
+        Post post = postRepository.findById(request.postId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다."));
+
+        // 중복 신고 방지
+        if (postReportRepository.findByPostIdAndMemberId(post.getId(), member.getId()).isPresent()) {
+            throw new IllegalArgumentException("이미 신고한 게시글입니다.");
+        }
+
+        // 신고 저장
+        PostReport report = PostReport.builder()
+                .post(post)
+                .member(member)
+                .reason(request.reason())
+                .build();
+        postReportRepository.save(report);
+    }
 }
+
