@@ -1,5 +1,6 @@
 package com.goorm.dapum.domain.Product.entity;
 
+import com.goorm.dapum.domain.Product.dto.ProductRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,8 +22,22 @@ public class Product {
     @Column(nullable = false)
     private int pointCost; // 상품 가격 (포인트)
 
-    private String barcode;
+    private String barcodeUrl;
 
     private int quantity;
+
+    public Product(ProductRequest request) {
+        this.name = request.name();
+        this.barcodeUrl = request.barcodeUrl();
+        this.quantity = request.quantity();
+        this.pointCost = request.pointCost();
+    }
+
+    public void update(ProductRequest request) {
+        this.name = request.name();
+        this.barcodeUrl = request.barcodeUrl();
+        this.quantity = request.quantity();
+        this.pointCost = request.pointCost();
+    }
 }
 
