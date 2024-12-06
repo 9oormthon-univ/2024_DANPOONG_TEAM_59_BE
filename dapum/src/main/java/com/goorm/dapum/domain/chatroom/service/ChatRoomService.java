@@ -12,6 +12,7 @@ import com.goorm.dapum.domain.member.service.MemberService;
 import com.goorm.dapum.domain.message.dto.MessageResponse;
 import com.goorm.dapum.domain.message.entity.Message;
 import com.goorm.dapum.domain.message.repository.MessageRepository;
+import com.goorm.dapum.domain.message.service.MessageService;
 import com.goorm.dapum.domain.post.entity.Post;
 import com.goorm.dapum.domain.post.repository.PostRepository;
 import jakarta.transaction.Transactional;
@@ -35,6 +36,8 @@ public class ChatRoomService {
     private final CarePostRepository carePostRepository;
     @Autowired
     private final PostRepository postRepository;
+    @Autowired
+    private final MessageService messageService;
 
     // CarePost 또는 Post 기반 채팅방 생성 또는 가져오기
     public ChatRoomResponse findOrCreateChatRoom(ChatRoomRequest request) {
@@ -72,6 +75,9 @@ public class ChatRoomService {
         List<MessageResponse> messageResponses = messages.stream()
                 .map(MessageResponse::new)
                 .toList();
+
+        // 안읽은 메시지 읽음 처리
+        messageService.markMessagesAsRead(chatRoom.getId(), currentUser);
 
         // 거래 완료 상태
         boolean tradeCompleted = chatRoom.isTradeCompleted();
