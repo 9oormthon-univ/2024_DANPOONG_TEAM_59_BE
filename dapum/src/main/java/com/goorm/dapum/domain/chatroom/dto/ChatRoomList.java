@@ -14,41 +14,33 @@ public record ChatRoomList(
         String lastMessage, // 마지막 메시지
         int unreadMessageCount, // 안 읽은 메시지 개수
         String tag, // 돌봄지원, 돌봄받기, 나눔받기
-        String state // 게시글들의 상태
+        String state // 게시글들의 상태 돌봄 완료, 예약중
 ) {
     public static ChatRoomList from(ChatRoom chatRoom, Member currentUser) {
         // 상대방 정보 추출
         Member otherUser = chatRoom.getMember1().equals(currentUser) ? chatRoom.getMember2() : chatRoom.getMember1();
         String otherUserName = otherUser.getKakaoName();
         String otherUserNeighborhood = otherUser.getNeighborhood().getDistrict();
-        String profileImage = otherUser.getProfileImageUrl();
+        String otherProfileImage = otherUser.getProfileImageUrl();
 
         // 마지막 메시지 및 읽지 않은 메시지 개수 계산
         String lastMessage = chatRoom.getMessages().isEmpty()
                 ? ""
-                : chatRoom.getMessages().get(chatRoom.getMessages().size() - 1).getContent();
+                : chatRoom.getMessages().getLast().getContent();
         int unreadMessageCount = (int) chatRoom.getMessages().stream()
                 .filter(message -> !message.isRead() && message.getReceiver().equals(currentUser))
                 .count();
 
-        // tag 및 state 결정
-        String tag;
-        String state = "";
-
+        // CarePost 정보 기반 태그 및 상태 결정
         CarePost carePost = chatRoom.getCarePost();
-
-        if (carePost != null) {
-            tag = carePost.getMember().equals(currentUser) ? "돌봄 제공" : "돌봄받기";
-            state = carePost.getTag().getDisplayName(); // CarePost의 상태 사용
-        } else {
-            tag = "나눔받기";
-        }
+        String tag = carePost != null && carePost.getMember().equals(currentUser) ? "돌봄 제공" : "돌봄받기";
+        String state = carePost != null ? carePost.getTag().getDisplayName() : "상태 없음";
 
         return new ChatRoomList(
                 chatRoom.getId(),
                 otherUserName,
                 otherUserNeighborhood,
-                profileImage,
+                otherProfileImage,
                 lastMessage,
                 unreadMessageCount,
                 tag,

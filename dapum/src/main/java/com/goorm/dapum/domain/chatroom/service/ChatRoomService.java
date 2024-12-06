@@ -39,50 +39,30 @@ public class ChatRoomService {
     @Autowired
     private final PostRepository postRepository;
 
-    // 채팅방 생성 기존에 있으면 가져오기
-    public ChatRoomResponse findOrCreateChatRoom(Id id) {
+    // CarePost 기반 채팅방 생성 또는 가져오기
+    public ChatRoomResponse findOrCreateCareChatRoom(Long carePostId) {
         Member member1 = memberService.findMember();
 
-        // CarePost가 있을 경우 CarePost로 채팅방 생성, 없으면 Post로 채팅방 생성
-        Long carePostId = id.carePostId();
-        Long postId = id.postId();
+        CarePost carePost = carePostRepository.findById(carePostId)
+                .orElseThrow(() -> new IllegalArgumentException("CarePost가 존재하지 않습니다."));
 
-        ChatRoom chatRoom;
+        ChatRoom chatRoom = chatRoomRepository.findByCarePostId(carePostId)
+                .orElseGet(() -> {
+                    ChatRoom newChatRoom = new ChatRoom();
+                    newChatRoom.setMember1(member1);
+                    newChatRoom.setMember2(carePost.getMember());
+                    newChatRoom.setCarePost(carePost);
+                    return chatRoomRepository.save(newChatRoom);
+                });
 
-        // carePostId가 0이 아닌 경우 CarePost 기반 채팅방 생성
-        if (carePostId != null && carePostId != 0) {
-            CarePost carePost = carePostRepository.findById(carePostId).orElse(null);
-            chatRoom = chatRoomRepository.findByCarePostId(carePostId)
-                    .orElseGet(() -> {
-                        ChatRoom newChatRoom = new ChatRoom();
-                        newChatRoom.setMember1(member1);
-                        newChatRoom.setCarePost(carePost);
-                        return chatRoomRepository.save(newChatRoom);
-                    });
-        }
-        // carePostId가 0인 경우 Post 기반 채팅방 생성
-        else if (postId != null && postId != 0) {
-            Post post = postRepository.findById(postId).orElse(null);
-            chatRoom = chatRoomRepository.findByPostId(postId)
-                    .orElseGet(() -> {
-                        ChatRoom newChatRoom = new ChatRoom();
-                        newChatRoom.setMember1(member1);
-                        newChatRoom.setPost(post);
-                        return chatRoomRepository.save(newChatRoom);
-                    });
-        }
-        else {
-            throw new IllegalArgumentException("Invalid Post or CarePost ID");
-        }
-
-        // 메시지 내용 가져오기
+        // 메시지 가져오기 및 읽음 처리
         messageService.markMessagesAsRead(chatRoom.getId(), member1);
         List<Message> messages = messageRepository.findByChatRoomIdOrderByCreatedAtAsc(chatRoom.getId());
 
-        // ChatRoomResponse에 채팅방 정보와 메시지 내용 포함
+        // ChatRoomResponse 생성
         return ChatRoomResponse.from(chatRoom, messages.stream()
                 .map(MessageResponse::new)
-                .toList(), member1, false, false);  // from 메서드를 사용하여 ChatRoomResponse 생성
+                .toList(), member1, false, false);
     }
 
     // 채팅 목록 가져오기
@@ -91,7 +71,7 @@ public class ChatRoomService {
         List<ChatRoom> chatRooms = chatRoomRepository.findByMember(member);
 
         return chatRooms.stream()
-                .map(chatRoom -> ChatRoomList.from(chatRoom, member))  // ChatRoomList.from() 호출
+                .map(chatRoom -> ChatRoomList.from(chatRoom, member)) // ChatRoomList 생성
                 .toList();
     }
 }

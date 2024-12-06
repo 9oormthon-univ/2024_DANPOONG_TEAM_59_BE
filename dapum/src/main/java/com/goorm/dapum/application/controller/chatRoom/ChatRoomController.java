@@ -20,10 +20,10 @@ public class ChatRoomController {
     @Autowired
     private final ChatRoomService chatRoomService;
 
-    @PostMapping("")
-    @Operation(summary = "채팅 불러오기 (없으면 생성)")
-    public ResponseEntity<ChatRoomResponse> findOrCreateChatRoom(@RequestBody Id id) {
-        ChatRoomResponse chatRoomResponse = chatRoomService.findOrCreateChatRoom(id);
+    @PostMapping("{care_post_id}")
+    @Operation(summary = "돌봄 게시글과 관련된 채팅 불러오기 (없으면 생성)")
+    public ResponseEntity<ChatRoomResponse> findOrCreateCareChatRoom(@RequestParam Long care_post_id) {
+        ChatRoomResponse chatRoomResponse = chatRoomService.findOrCreateCareChatRoom(care_post_id);
         return ResponseEntity.ok(chatRoomResponse);
     }
 
