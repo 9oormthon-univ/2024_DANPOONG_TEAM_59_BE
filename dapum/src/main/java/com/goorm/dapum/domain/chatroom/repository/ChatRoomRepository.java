@@ -1,6 +1,7 @@
 package com.goorm.dapum.domain.chatroom.repository;
 
 import com.goorm.dapum.domain.chatroom.entity.ChatRoom;
+import com.goorm.dapum.domain.chatroom.entity.TradeState;
 import com.goorm.dapum.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -20,4 +21,6 @@ public interface ChatRoomRepository extends CrudRepository<ChatRoom, Long> {
     Optional<ChatRoom> findByCarePostId(Long carePostId);
 
     Optional<ChatRoom> findByPostId(Long postId);
+
+    List<ChatRoom> findByTradeStateAndMember(TradeState tradeState, Member currentUser);
 }

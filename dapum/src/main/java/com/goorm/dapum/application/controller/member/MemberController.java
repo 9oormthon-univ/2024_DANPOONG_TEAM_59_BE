@@ -51,10 +51,16 @@ public class MemberController {
     }
 
     @GetMapping("/care")
-    @Operation(summary = "돌봄 목록 가져오기")
+    @Operation(summary = "내가 작성한 돌봄 목록 가져오기")
     public ResponseEntity<List<CarePostListResponse>> getMyCarePosts() {
         List<CarePostListResponse> myCares = memberService.getMyCares();
         return ResponseEntity.ok().body(myCares);
     }
 
+    @GetMapping("/takeCare")
+    @Operation(summary = "내가 돌봐준 돌봄 목록 불러오기")
+    public ResponseEntity<List<CarePostListResponse>> getMyTakeCarePosts() {
+        List<CarePostListResponse> myCares = memberService.getMyTakeCares();
+        return ResponseEntity.ok().body(myCares);
+    }
 }
