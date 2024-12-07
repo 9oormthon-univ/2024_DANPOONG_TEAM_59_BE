@@ -244,7 +244,10 @@ public class MemberService {
                     carePost.getUpdatedAt(),
                     likeCount,
                     commentCount,
-                    liked
+                    liked,
+                    carePost.getMember().getNeighborhood().getProvince(),
+                    carePost.getMember().getNeighborhood().getCity(),
+                    carePost.getMember().getNeighborhood().getDistrict()
             );
             responses.add(response);
         }
@@ -286,7 +289,10 @@ public class MemberService {
                         carePost.getUpdatedAt(),
                         likeCount,
                         commentCount,
-                        liked
+                        liked,
+                        carePost.getMember().getNeighborhood().getProvince(),
+                        carePost.getMember().getNeighborhood().getCity(),
+                        carePost.getMember().getNeighborhood().getDistrict()
                 );
                 responses.add(response);
             }

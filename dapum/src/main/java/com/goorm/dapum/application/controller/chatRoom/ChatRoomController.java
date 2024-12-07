@@ -21,8 +21,8 @@ public class ChatRoomController {
     @Autowired
     private final ChatRoomService chatRoomService;
 
-    @PostMapping("{care_post_id}")
-    @Operation(summary = "돌봄 게시글과 관련된 채팅 불러오기 (없으면 생성)")
+    @PostMapping("")
+    @Operation(summary = "게시글과 관련된 채팅 불러오기 (없으면 생성) / tag에는 나눔, 돌봄 두가지만 가능, id에는 게시글/돌봄게시글의 id 입력")
     public ResponseEntity<ChatRoomResponse> findOrCreateCareChatRoom(@RequestBody ChatRoomRequest request) {
         ChatRoomResponse chatRoomResponse = chatRoomService.findOrCreateChatRoom(request);
         return ResponseEntity.ok(chatRoomResponse);
@@ -43,6 +43,17 @@ public class ChatRoomController {
             return ResponseEntity.ok().build();
         } catch (IllegalAccessException e) {
             return ResponseEntity.status(403).build(); // 권한 없는 사용자
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null); // 잘못된 요청
+        }
+    }
+
+    @GetMapping("/{chatRoomId}")
+    @Operation(summary = "특정 채팅방 정보 가져오기")
+    public ResponseEntity<ChatRoomResponse> getChatRoom(@PathVariable Long chatRoomId) {
+        try {
+            ChatRoomResponse chatRoomResponse = chatRoomService.getChatRoom(chatRoomId);
+            return ResponseEntity.ok(chatRoomResponse);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(null); // 잘못된 요청
         }

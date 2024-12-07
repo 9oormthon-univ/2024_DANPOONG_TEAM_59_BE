@@ -28,13 +28,14 @@ public class CouponService {
     private final MemberService memberService;
 
     // 상품 구매 후 쿠폰 생성
-    public Coupon purchaseProduct(Long productId) {
+    public void purchaseProduct(Long productId) {
         Member member = memberService.findMember();
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
 
         // 포인트 확인 및 차감
         member.deductPoints(product.getPointCost());
+        product.deductQuantity();
 
         // 쿠폰 생성
         Coupon coupon = Coupon.builder()
@@ -42,7 +43,8 @@ public class CouponService {
                 .product(product)
                 .used(false)
                 .build();
-        return couponRepository.save(coupon);
+
+        couponRepository.save(coupon);
     }
 
     // 사용자가 보유한 쿠폰 리스트 가져오기
@@ -57,7 +59,7 @@ public class CouponService {
                         coupon.getProduct().getId(),
                         coupon.getProduct().getName(),
                         coupon.getProduct().getPointCost(),
-                        coupon.getProduct().getBarcode(),
+                        coupon.getProduct().getBarcodeUrl(),
                         coupon.isUsed()
                 ))
                 .toList();
@@ -69,7 +71,7 @@ public class CouponService {
         Coupon coupon = couponRepository.findById(couponId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 쿠폰을 찾을 수 없습니다."));
         Product product = coupon.getProduct();
-        return new CouponList(coupon.getId(),product.getId(), product.getName(), product.getPointCost(), product.getBarcode(), coupon.isUsed());
+        return new CouponList(coupon.getId(),product.getId(), product.getName(), product.getPointCost(), product.getBarcodeUrl(), coupon.isUsed());
     }
 
     // 쿠폰 사용 처리

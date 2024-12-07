@@ -96,4 +96,8 @@ public class CarePost extends BaseEntity {
         this.startTime = request.startTime();
         this.endTime = request.endTime();
     }
+
+    public void updateTag(String tag) {
+        this.carePostTag = CarePostTag.valueOf(tag);
+    }
 }

@@ -65,7 +65,7 @@ public class MemberController {
         return ResponseEntity.ok().body(myCares);
     }
 
-    @GetMapping("/Info")
+    @GetMapping("/info")
     @Operation(summary = "사용자 정보 가져오기")
     public ResponseEntity<MemberResponse> getMemberInfo() {
         MemberResponse memberInfo = memberService.getMemberInfo();
