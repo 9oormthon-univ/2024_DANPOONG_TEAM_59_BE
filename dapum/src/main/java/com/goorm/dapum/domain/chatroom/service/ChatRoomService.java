@@ -76,6 +76,11 @@ public class ChatRoomService {
         CarePost carePost = carePostRepository.findById(request.id())
                 .orElseThrow(() -> new IllegalArgumentException("CarePost를 찾을 수 없습니다."));
 
+        // 게시글 작성자와 현재 사용자 비교
+        if (currentUser.getId().equals(carePost.getMember().getId())) {
+            throw new IllegalArgumentException("자신의 CarePost로는 채팅방을 생성할 수 없습니다.");
+        }
+
         Member otherMember = carePost.getMember();
         return chatRoomRepository.findByCarePostId(request.id())
                 .orElseGet(() -> ChatRoom.createCareChatRoom(currentUser, otherMember, carePost));
@@ -85,6 +90,11 @@ public class ChatRoomService {
     private ChatRoom findOrCreateShareChatRoom(ChatRoomRequest request, Member currentUser) {
         Post post = postRepository.findById(request.id())
                 .orElseThrow(() -> new IllegalArgumentException("Post를 찾을 수 없습니다."));
+
+        // 게시글 작성자와 현재 사용자 비교
+        if (currentUser.getId().equals(post.getMember().getId())) {
+            throw new IllegalArgumentException("자신의 Post로는 채팅방을 생성할 수 없습니다.");
+        }
 
         Member otherMember = post.getMember();
         return chatRoomRepository.findByPostId(request.id())
@@ -120,7 +130,6 @@ public class ChatRoomService {
         }
     }
 
-
     // 현재 사용자의 채팅 목록 가져오기
     public List<ChatRoomList> getChatRooms() {
         Member currentUser = memberService.findMember();
@@ -150,7 +159,6 @@ public class ChatRoomService {
 
         return ChatRoomResponse.from(chatRoom, messageResponses, currentUser, tradeState, reviewCompleted);
     }
-
 
     // 거래 상태 바꿈
     public void changeTradeState(TradeStateRequest request) throws IllegalAccessException {
@@ -193,5 +201,4 @@ public class ChatRoomService {
             throw new IllegalArgumentException("유효하지 않은 ChatRoomTag입니다.");
         }
     }
-
 }
