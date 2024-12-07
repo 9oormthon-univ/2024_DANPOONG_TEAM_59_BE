@@ -182,6 +182,7 @@ public class ChatRoomService {
             Post post = chatRoom.getPost();
             if (post.getMember().equals(currentUser)) {
                 chatRoom.changeTradeState(newTradeState);
+                post.addPostTags(request.tradeState());
             } else {
                 throw new IllegalAccessException("게시글 작성자만 거래 상태를 변경할 수 있습니다.");
             }
@@ -189,7 +190,7 @@ public class ChatRoomService {
             CarePost carePost = chatRoom.getCarePost();
             if (carePost.getMember().equals(currentUser)) {
                 chatRoom.changeTradeState(newTradeState);
-
+                carePost.updateTag(request.tradeState());
                 if (newTradeState.equals(TradeState.TRADE_COMPLETED)) {
                     // 돌봄 시간 계산
                     int timeInMinutes = (carePost.getEndTime().getHour() * 60 + carePost.getEndTime().getMinute())

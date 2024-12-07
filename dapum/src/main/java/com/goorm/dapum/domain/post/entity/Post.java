@@ -92,4 +92,8 @@ public class Post extends BaseEntity {
         }
         return postTags;
     }
+
+    public void addPostTags(String tag){
+        this.postTags.add(PostTag.fromDisplayName(tag));
+    }
 }
