@@ -117,7 +117,10 @@ public class CarePostService {
                 carePost.getUpdatedAt(),
                 likeCount,
                 commentCount,
-                liked
+                liked,
+                carePost.getMember().getNeighborhood().getProvince(),
+                carePost.getMember().getNeighborhood().getCity(),
+                carePost.getMember().getNeighborhood().getDistrict()
         );
     }
 
