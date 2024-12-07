@@ -76,12 +76,12 @@ public class ChatRoomService {
     private ChatRoom findOrCreateCareChatRoom(ChatRoomRequest request, Member currentUser) {
         CarePost carePost = carePostRepository.findById(request.id())
                 .orElseThrow(() -> new IllegalArgumentException("CarePost를 찾을 수 없습니다."));
-
-        // 게시글 작성자와 현재 사용자 비교
-        if (currentUser.getId().equals(carePost.getMember().getId())) {
+        // 게시글 작성자와 현재 사용자가 같으면 예외 발생 (게시글 작성자는 채팅방을 만들 수 없음)
+        if (request.memberId().equals(currentUser.getId())) {
             throw new IllegalArgumentException("자신의 CarePost로는 채팅방을 생성할 수 없습니다.");
         }
 
+        // 채팅방을 생성하려는 다른 사용자
         Member otherMember = carePost.getMember();
 
         // 현재 사용자와 게시글 작성자로 구성된 기존 채팅방 검색
@@ -96,11 +96,12 @@ public class ChatRoomService {
         Post post = postRepository.findById(request.id())
                 .orElseThrow(() -> new IllegalArgumentException("Post를 찾을 수 없습니다."));
 
-        // 게시글 작성자와 현재 사용자 비교
-        if (currentUser.getId().equals(post.getMember().getId())) {
+        // 게시글 작성자와 현재 사용자가 같으면 예외 발생 (게시글 작성자는 채팅방을 만들 수 없음)
+        if (request.memberId().equals(currentUser.getId())) {
             throw new IllegalArgumentException("자신의 Post로는 채팅방을 생성할 수 없습니다.");
         }
 
+        // 채팅방을 생성하려는 다른 사용자
         Member otherMember = post.getMember();
 
         // 현재 사용자와 게시글 작성자로 구성된 기존 채팅방 검색
@@ -109,6 +110,7 @@ public class ChatRoomService {
         // 기존 채팅방이 있으면 반환, 없으면 새로 생성
         return existingChatRoom.orElseGet(() -> ChatRoom.createPostChatRoom(currentUser, otherMember, post));
     }
+
 
     // ChatRoom 저장
     private ChatRoom saveChatRoom(ChatRoom chatRoom) {
