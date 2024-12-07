@@ -5,6 +5,7 @@ import com.goorm.dapum.domain.chatroom.entity.ChatRoom;
 import com.goorm.dapum.domain.chatroom.entity.ChatRoomTag;
 import com.goorm.dapum.domain.chatroom.repository.ChatRoomRepository;
 import com.goorm.dapum.domain.member.entity.Member;
+import com.goorm.dapum.domain.member.repository.MemberRepository;
 import com.goorm.dapum.domain.member.service.MemberService;
 import com.goorm.dapum.domain.post.entity.Post;
 import com.goorm.dapum.domain.review.dto.ReviewRequest;
@@ -26,6 +27,8 @@ public class ReviewService {
     private final MemberService memberService;
     @Autowired
     private final ChatRoomRepository chatRoomRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
     public void createReview(ReviewRequest request) {
         Member from = memberService.findMember();
@@ -116,6 +119,7 @@ public class ReviewService {
         else if(rating == 1){
             member.deductTemperature(1.0);
         }
+        memberRepository.save(member);
     }
 
 }
