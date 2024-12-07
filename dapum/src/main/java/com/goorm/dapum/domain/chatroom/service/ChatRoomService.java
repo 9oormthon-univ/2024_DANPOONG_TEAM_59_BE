@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -82,8 +83,12 @@ public class ChatRoomService {
         }
 
         Member otherMember = carePost.getMember();
-        return chatRoomRepository.findByCarePostId(request.id())
-                .orElseGet(() -> ChatRoom.createCareChatRoom(currentUser, otherMember, carePost));
+
+        // 현재 사용자와 게시글 작성자로 구성된 기존 채팅방 검색
+        Optional<ChatRoom> existingChatRoom = chatRoomRepository.findByCarePostAndMembers(carePost, currentUser, otherMember);
+
+        // 기존 채팅방이 있으면 반환, 없으면 새로 생성
+        return existingChatRoom.orElseGet(() -> ChatRoom.createCareChatRoom(currentUser, otherMember, carePost));
     }
 
     // Post 기반 ChatRoom 생성 또는 찾기
@@ -97,8 +102,12 @@ public class ChatRoomService {
         }
 
         Member otherMember = post.getMember();
-        return chatRoomRepository.findByPostId(request.id())
-                .orElseGet(() -> ChatRoom.createPostChatRoom(currentUser, otherMember, post));
+
+        // 현재 사용자와 게시글 작성자로 구성된 기존 채팅방 검색
+        Optional<ChatRoom> existingChatRoom = chatRoomRepository.findByPostAndMembers(post, currentUser, otherMember);
+
+        // 기존 채팅방이 있으면 반환, 없으면 새로 생성
+        return existingChatRoom.orElseGet(() -> ChatRoom.createPostChatRoom(currentUser, otherMember, post));
     }
 
     // ChatRoom 저장
